@@ -6,7 +6,7 @@ export function search(json, query) {
         threshold: 0.4,
         includeScore: true,
         keys: [
-            "title",
+            "name",
             "url",
             "tags"
         ]

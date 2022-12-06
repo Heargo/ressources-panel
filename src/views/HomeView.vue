@@ -2,7 +2,7 @@
   <div class="home">
     <input type="url" name="search" v-model="searchQuery" placeholder="search">
     <div v-if="results!={}">
-      <p v-for="(res, index) in results" :key="index">{{res.item.title}}</p>
+      <ResultCardVue v-for="(res, index) in results" :key="index" :result="res.item"></ResultCardVue>
     </div>
   </div>
 </template>
@@ -11,9 +11,8 @@
 import { ref,watch } from 'vue'
 import { cleanUpJSON } from "@/js/convertTabsAsJson.js"
 import { search } from "@/js/search.js"
- //import json
 import json from "@/js/tools.json"
-//import cleanJ from "@/js/clean.json"
+import ResultCardVue from '@/components/ResultCard.vue'
 
 var searchQuery = ref('')
 var results = ref({})

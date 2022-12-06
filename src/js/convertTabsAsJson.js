@@ -1,37 +1,51 @@
 export function cleanUpJSON(json) {
 
      //explore json an remove all typeCode and guid properties
-    deleteUselessProperties(json,["typeCode","guid","index","type","id"]);
-    ApplyParentsFolderNameAsTag(json,[])
+    DeleteUselessProperties(json,["typeCode","guid","index","type","id"]);
+    ApplyParentsFolderNameAsTag(json,[],"title")
+    RenameProperties(json,{"uri":"url","title":"name"});
     json = FlattenTree(json);
 
     return json;
 }
 
-function deleteUselessProperties(json,propertiesToDelete) {
+function DeleteUselessProperties(json,propertiesToDelete) {
    
     for (var key in json) {
         if (propertiesToDelete.includes(key)) {
             delete json[key];
         }
         if (typeof json[key] == "object") {
-            deleteUselessProperties(json[key],propertiesToDelete);
+            DeleteUselessProperties(json[key],propertiesToDelete);
         }
     }
 }
 
-function ApplyParentsFolderNameAsTag(json,tags) {
+export function RenameProperties(json,propertiesToRename) {
+   
+    for (var key in json) {
+        if (propertiesToRename[key] != undefined) {
+            json[propertiesToRename[key]] = json[key];
+            delete json[key];
+        }
+        if (typeof json[key] == "object") {
+            RenameProperties(json[key],propertiesToRename);
+        }
+    }
+}
+
+function ApplyParentsFolderNameAsTag(json,tags,propertyName) {
     //apply tags
     json["tags"]= tags.slice();
 
     for (var key in json) {
         //update tags with current parent name
-        if (key == "title" && json.children != undefined) {
+        if (key == propertyName && json.children != undefined) {
             tags.push(json[key]);
         }
         if (typeof json[key] == "object" && key!="tags") {            
             //explore children
-            ApplyParentsFolderNameAsTag(json[key],tags.slice());
+            ApplyParentsFolderNameAsTag(json[key],tags.slice(),propertyName);
         }
     }
    
