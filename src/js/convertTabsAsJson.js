@@ -7,6 +7,7 @@ export function cleanUpJSON(json) {
     RenameProperties(json,{"uri":"url","title":"name","iconUri":"iconUrl"});
     json = FlattenTree(json);
     GenerateIds(json);
+    AddNewProperties(json);
 
     return json;
 }
@@ -73,6 +74,14 @@ function GenerateIds(json) {
         let str = json[i].name + json[i].url;
         let hash = hashCode(str);
         json[i].id = hash;
+    }
+}
+
+function AddNewProperties(json) {
+    for(let i=0;i<json.length;i++)
+    {
+        json[i].visitCount = 0;
+        json[i].lastVisitTime = Date.now();
     }
 }
 

@@ -11,6 +11,9 @@
 </template>
 <script setup>
 import { defineProps } from 'vue'
+import { useStore } from '@/stores/store'
+
+const store = useStore()
 
 //eslint-disable-next-line
 const props = defineProps({
@@ -24,14 +27,9 @@ const props = defineProps({
     }
 })
 
-//every time the props change, this will be called
-//eslint-disable-next-line
-//var iconUrl = "https://www.google.com/s2/favicons?domain="+props.result.url
-
-
-
 function openLink()
 {
+    store.IncrementVisitCount(props.result.id)
     window.open(props.result.url)
 }
 

@@ -38,7 +38,9 @@ export const useStore = defineStore('main', {
         search(query) {
           const fuse = new Fuse(this.content, this.searchOptions);
           let res = fuse.search(query);
-          return res
+          let info = "Found " + res.length + " results for '" + query + "'";
+
+          return {results:res,infos:info};
         },
         AddBookmark(name, url,iconUrl, tags)
         {
@@ -67,6 +69,27 @@ export const useStore = defineStore('main', {
             this.content[index][key] = updateContent[key];
           }
           localStorage.setItem('content', JSON.stringify(this.content));
+        },
+        IncrementVisitCount(id)
+        {
+          let index = this.content.findIndex(x => x.id == id);
+          console.log("increment visit count",id,this.content[index])
+          //visit count
+          this.content[index].visitCount++;
+
+          //last visit
+          this.content[index].lastVisitTime = Date.now();
+          console.log("increment visit count done",id,this.content[index])
+          localStorage.setItem('content', JSON.stringify(this.content));
+        },
+        GetMostVisited(n)
+        {
+          let mostVisited = this.content.sort((a,b) => b.visitCount - a.visitCount).slice(0,n);
+          //get first n on most visited where visit count > 0
+          mostVisited = mostVisited.filter(x => x.visitCount > 0);
+          console.log(mostVisited)
+          return mostVisited;
         }
+
       }
 })
