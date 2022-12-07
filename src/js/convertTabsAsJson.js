@@ -42,7 +42,7 @@ function ApplyParentsFolderNameAsTag(json,tags,propertyName) {
 
     for (var key in json) {
         //update tags with current parent name
-        if (key == propertyName && json.children != undefined) {
+        if (key == propertyName && json.children != undefined && json[key] !="Tools") {
             tags.push(json[key]);
         }
         if (typeof json[key] == "object" && key!="tags") {            

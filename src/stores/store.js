@@ -12,7 +12,7 @@ export const useStore = defineStore('main', {
           content: null,
           searchOptions:{
             shouldSort: true,
-            threshold: 0.4,
+            threshold: 0.2,
             includeScore: true,
             keys: [
                 "name",
