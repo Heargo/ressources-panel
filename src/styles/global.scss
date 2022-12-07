@@ -1,0 +1,63 @@
+//Normalize css
+@import "@/styles/normalize.scss";
+@import url('https://fonts.googleapis.com/css2?family=Sarpanch:wght@600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=BioRhyme:wght@300;400;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Raleway:ital,wght@0,200;0,400;0,800;0,900;1,200;1,400;1,800;1,900&display=swap');
+
+//-------------------------------
+//-----------VARIABLES-----------
+//-------------------------------
+
+$red:rgb(223, 52, 52);
+$dark-red :#64141ecc;
+$white: white;
+$orange: #FCA311;
+$dark-blue: #14213D;
+$grey: #E5E5E5;
+
+
+$dark:#22223b;
+$dark2: rgb(34, 34, 59,0.85);
+$blue:#4a4e69;
+$better-blue: #273494;
+$marron:#9a8c98;
+$marronlight:#c9ada7;
+$white:#f1f2f6;
+
+$formbgcolor: $grey;
+
+//---------------------------------
+//-----------BREAKPOINTS-----------
+//---------------------------------
+
+@mixin width-over($_min-width) {
+    @media screen and (min-width: $_min-width) {
+        &{ @content; }
+    }
+}
+
+@mixin width-under($_max-width) {
+    @media screen and (max-width: $_max-width) {
+        &{ @content; }
+    }
+}
+
+
+//----------------------------------
+//-----------GLOBAL STYLE-----------
+//----------------------------------
+
+*{
+    font-family: 'Raleway', sans-serif;
+}
+
+
+.noselect {
+    -webkit-touch-callout: none; /* iOS Safari */
+      -webkit-user-select: none; /* Safari */
+       -khtml-user-select: none; /* Konqueror HTML */
+         -moz-user-select: none; /* Old versions of Firefox */
+          -ms-user-select: none; /* Internet Explorer/Edge */
+              user-select: none; /* Non-prefixed version, currently
+                                    supported by Chrome, Edge, Opera and Firefox */
+  }
