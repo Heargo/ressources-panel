@@ -9,20 +9,25 @@
 
 <script setup>
 import { ref,watch } from 'vue'
-import { cleanUpJSON } from "@/js/convertTabsAsJson.js"
-import { search } from "@/js/search.js"
-import json from "@/js/tools.json"
+import { useStore } from '@/stores/store'
 import ResultCardVue from '@/components/ResultCard.vue'
+
+import { cleanUpJSON } from '@/js/convertTabsAsJson';
+import json from '@/js/tools.json'
+
+let converted = cleanUpJSON(json)
+console.log(converted)
+
+const store = useStore()
+store.LoadContent()
 
 var searchQuery = ref('')
 var results = ref({})
-
-var myJson = cleanUpJSON(json);
-console.log(myJson)
+console.log(store.content)
 //when search is changed, call search function
 watch(searchQuery, (value) => {
   if(value == '' || value==undefined) return
-  results.value = search(myJson,value)
+  results.value = store.search(value)
 })
 
 

@@ -1,8 +1,12 @@
 <template>
     <div class="resultCard" @click="openLink">
-        <img :src="result.iconUri" alt="no image :/">
-        <p>{{result.name}}</p>
-        <p>{{result.tags}}</p>
+        <div class="basicInfo">
+            <img :src="result.iconUrl" alt="no image :/">
+            <p>{{result.name}}</p>
+        </div>
+        <div class="tags">
+            <p v-for="(tag, index) in result.tags" :key="index">{{tag}}</p>
+        </div>
     </div>
 </template>
 <script setup>
@@ -25,17 +29,26 @@ function openLink()
 <style lang="scss" scoped>
 .resultCard{
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
     width: 100%;
     border:2px solid black;    
-
-    img{
-        width: 100px;
-        height: 100px;
-        //cover
-        object-fit: cover;
+    .basicInfo{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        width: 100%;
+        p{
+            margin: 0;
+        }
+        img{
+            width: 100px;
+            height: 100px;
+            //cover
+            object-fit: cover;
+        }
     }
 }  
 </style>
