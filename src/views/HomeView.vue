@@ -1,7 +1,8 @@
 <template>
   <div class="home">
-    <!-- BACKGROUND -->
-    <img src="@/assets/waves.svg" alt="bg" class="animatedWaves">
+    <router-link to="/settings" class="topRightIcon">
+      <img src="@/assets/settings.svg" alt="">
+    </router-link>
 
     <!-- SEARCH BAR -->
     <section class="searchBarContainer" ref="searchBar">
@@ -32,11 +33,11 @@ import { ref } from 'vue'
 import { useStore } from '@/stores/store'
 import ResultCardVue from '@/components/ResultCard.vue'
 import FavCardVue from '@/components/FavCard.vue'
-import { cleanUpJSON } from '@/js/convertTabsAsJson';
+import { cleanUpJSON } from '@/js/convertTabsAsJson'
 import json from '@/js/tools.json'
 
-let converted = cleanUpJSON(json)
-console.log(converted)
+let c = cleanUpJSON(json)
+console.log(c)
 
 const store = useStore()
 store.LoadContent()
@@ -96,6 +97,13 @@ function search()
   width: 100%;
   height: 100%;
   min-height: 90vh;
+
+  .topRightIcon{
+    &:hover{
+        transform-origin: center;
+        transform:rotate(180deg);
+    }
+}
   .searchBarContainer{
     position:absolute;
     top:40%;
@@ -139,17 +147,7 @@ function search()
     color: $dark;
     margin-top: 1rem;
   }
-  section{
-    width: 90%;
-    max-width: 1300px;
-    margin: 0;
-    padding: 0;
-
-    h2{
-      color: $dark;
-      font-weight: normal;
-    }
-  }
+  
   .favDisplayFlex{
     display: flex;
     flex-direction: row;

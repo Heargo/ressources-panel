@@ -26,6 +26,9 @@ $white:#f1f2f6;
 
 $formbgcolor: $grey;
 
+//gradient from #ff00ff to 00ffff
+$gradient: linear-gradient(90deg, #ff00ff 0%, #00ffff 100%);
+
 //---------------------------------
 //-----------BREAKPOINTS-----------
 //---------------------------------
@@ -51,6 +54,27 @@ $formbgcolor: $grey;
     font-family: 'Raleway', sans-serif;
 }
 
+.topRightIcon{
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    font-size: 1.5rem;
+    width: 35px;
+    height: 35px;
+    transition: all 0.3s ease-in-out;
+}
+
+section{
+    width: 90%;
+    max-width: 1300px;
+    margin: 0;
+    padding: 0;
+
+    h2{
+      color: $dark;
+      font-weight: normal;
+    }
+  }
 
 .noselect {
     -webkit-touch-callout: none; /* iOS Safari */
