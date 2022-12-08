@@ -73,13 +73,11 @@ export const useStore = defineStore('main', {
         IncrementVisitCount(id)
         {
           let index = this.content.findIndex(x => x.id == id);
-          console.log("increment visit count",id,this.content[index])
           //visit count
           this.content[index].visitCount++;
 
           //last visit
           this.content[index].lastVisitTime = Date.now();
-          console.log("increment visit count done",id,this.content[index])
           localStorage.setItem('content', JSON.stringify(this.content));
         },
         GetMostVisited(n)
@@ -87,8 +85,45 @@ export const useStore = defineStore('main', {
           let mostVisited = this.content.sort((a,b) => b.visitCount - a.visitCount).slice(0,n);
           //get first n on most visited where visit count > 0
           mostVisited = mostVisited.filter(x => x.visitCount > 0);
-          console.log(mostVisited)
           return mostVisited;
+        },
+        AddListOfBookmarks(bookmarks)
+        {
+          let feedback; 
+          try{
+
+            //remove duplicates from bookmarks
+            let data= this.RemoveDuplicates(bookmarks)
+            bookmarks = data.bookmarks;
+            this.content = this.content.concat(bookmarks);
+            localStorage.setItem('content', JSON.stringify(this.content));
+            feedback = "Success to import "+bookmarks.length +" bookmarks. "+data.feedback;
+          }
+          catch(e)
+          {
+            feedback = "Failed to import "+bookmarks.length +" bookmarks";
+          }
+
+          return feedback
+        },
+        RemoveDuplicates(bookmark)
+        {
+          let filteredBookmark = [];
+          for(let i = 0; i < bookmark.length; i++)
+          {
+            let b = bookmark[i];
+            let index = this.content.findIndex(x => x.id === b.id);
+            if(index == -1)
+            {
+              filteredBookmark.push(b);
+            }
+          }
+          return {bookmarks:filteredBookmark,feedback:"Removed "+(bookmark.length - filteredBookmark.length)+" duplicates."};
+        },
+        ResetContent()
+        {
+          this.content = jsonContent;
+          localStorage.setItem('content', JSON.stringify(jsonContent));
         }
 
       }

@@ -5,7 +5,7 @@
             <p>{{result.name}}</p>
         </div>
         <div class="tags">
-            <p v-for="(tag, index) in result.tags" :key="index">{{tag}}</p>
+            <p v-for="(tag, index) in result.tags" :key="index" v-show="tag!=''">{{tag}}</p>
         </div>
     </div>
 </template>
