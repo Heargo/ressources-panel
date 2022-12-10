@@ -42,19 +42,34 @@ export const useStore = defineStore('main', {
 
           return {results:res,infos:info};
         },
-        AddBookmark(name, url,iconUrl, tags)
+        AddBookmark(data)
         {
+          let {name, url, description, tags} = data;
+          if (name == null || url == null || description == null || tags == null) {
+            return "Please fill all fields";
+          }
+
           let bookmark = {
             name: name,
-            id:hashCode(name+url),
+            id:hashCode(url),
             dateAdded: Date.now(),
             lastModified: Date.now(),
-            iconUrl: iconUrl,
+            iconUrl: "",
+            description: description,
             url: url,
-            tags: tags
+            tags: tags.split(',')
           }
-          this.content.push(bookmark);
-          localStorage.setItem('content', JSON.stringify(this.content));
+          console.log(bookmark)
+          let b = this.RemoveDuplicates([bookmark]);
+          let feedback = "Bookmark added";
+          if(b.bookmarks.length != 0)
+          {
+            this.content.push(b.bookmarks[0]);
+            localStorage.setItem('content', JSON.stringify(this.content));
+          }
+          else
+            feedback = "Bookmark already exists";
+          return feedback;
         },
         DeleteBookmark(id)
         {
