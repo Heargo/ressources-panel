@@ -111,6 +111,7 @@ function search()
     width: 100%;
     max-width: 550px;
     transition: all 0.3s ease-in-out;
+    z-index: 10;
     
     input{
       width: calc(100% - 2rem);

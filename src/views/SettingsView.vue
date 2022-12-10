@@ -9,14 +9,27 @@
 
     <!-- Import json -->
     <section class="flexCol">
+      <h2>Import favs</h2>
       <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
       <!-- <label for="file">Import</label> -->
       <button v-if="importSucessfull" @click="importData">Import</button>
       <p class="feedback">{{feedback}}</p>
     </section>
 
+    <!-- Create New favs -->
+    <section class="flexCol">
+      <h2>Create a fav</h2>
+      <input type="text" placeholder="Name" v-model="newFav.name">
+      <input type="text" placeholder="Url" v-model="newFav.url">
+      <input type="text" placeholder="Description" v-model="newFav.description">
+      <!-- tags (multi selection input) -->
+      <input type="text" placeholder="Tag1, tag2, etc.." v-model="newFav.tags">
+      <button @click="CreateNewFavs">Add a new fav</button>
+      <p class="feedback">{{feedback2}}</p>
+    </section>
+
     <section class="flexCol dangerZone">
-      <h2 class="danger">Danger Zone</h2>
+      <h2>Danger Zone</h2>
       <button @click="store.ResetContent">Reset content</button>
       <button @click="store.ResetContent">Reset visitCount</button>
     </section>
@@ -32,6 +45,9 @@ const store = useStore()
 const importSucessfull = ref(false)
 const importedJson = ref(null)
 const feedback = ref("")
+const feedback2 = ref("")
+const newFav = ref({})
+
 
 function selectFile(e)
 {
@@ -42,6 +58,11 @@ function selectFile(e)
     let fileContents = evt.target.result;
     importJson(fileContents)
   }
+}
+
+function CreateNewFavs()
+{
+  feedback2.value = store.AddBookmark(newFav.value)
 }
 
 function importData()
@@ -69,12 +90,44 @@ h1{
   color: $white;
 }
 
-.dangerZone{
+section{
   margin-top: 2rem;
   width: fit-content;
-  position: relative;
-  $line-size:200px;
-  &::after, &::before{
+
+  input{
+    border: none;
+    border-radius: 1rem;
+    padding: .5rem .8rem;
+    font-size: 1rem;
+    outline: none;
+    border: 0;
+  }
+
+  &.dangerZone{
+    h2{
+      color: $dark-red;
+      font-weight: bold;
+      &::after, &::before{
+        background-color: $dark-red;
+      }
+    }
+    button{
+      background-color: $white;
+      color: $dark-red;
+      &:hover{
+        background-color: $dark-red;
+        color: $white;
+      }
+    }
+  }
+  
+  h2{
+    position: relative;
+    $line-size:200px;
+    padding: 0;
+    margin: 0;
+
+    &::after, &::before{
     content: "";
     position: absolute;
     top:1rem;
@@ -82,7 +135,7 @@ h1{
     display: block;
     width: $line-size;
     height: 2px;
-    background-color: $dark-red;
+    background-color: $dark;
     margin: 0 -1rem;
   }
   &::before{
@@ -90,20 +143,14 @@ h1{
     left:-$line-size;
     margin: 0 -1rem;
   }
-  h2{
-
-    padding: 0;
-    margin: 0;
-    font-weight: bold;
-    color: $dark-red;
   }
 
   button{
     font-weight: 600;
     background-color: $white;
-    color: $dark-red;
+    color: $dark;
     &:hover{
-      background-color: $dark-red;
+      background-color: $dark;
       color: $white;
     }
   }
