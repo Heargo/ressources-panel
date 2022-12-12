@@ -7,15 +7,6 @@
       <img src="@/assets/home.svg" alt="">
     </router-link>
 
-    <!-- Import json -->
-    <section class="flexCol">
-      <h2>Import favs</h2>
-      <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
-      <!-- <label for="file">Import</label> -->
-      <button v-if="importSucessfull" @click="importData">Import</button>
-      <p class="feedback">{{feedback}}</p>
-    </section>
-
     <!-- Create New favs -->
     <section class="flexCol">
       <h2>Create a fav</h2>
@@ -27,6 +18,26 @@
       <button @click="CreateNewFavs">Add a new fav</button>
       <p class="feedback">{{feedback2}}</p>
     </section>
+
+    <!-- Import json -->
+    <section class="flexCol">
+      <h2>Import favs</h2>
+      <p>Import Firefix bookmarks or custom saved in .json format.</p>
+      <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
+      <!-- <label for="file">Import</label> -->
+      <button v-if="fileSelected" @click="importData">Import</button>
+      <p class="feedback">{{feedback}}</p>
+    </section>
+
+    <!-- Export json -->
+    <section class="flexCol">
+      <h2>Export data</h2>
+      <p>Export the current {{store.content.length}} saved bookmarks (include default + custom)</p>
+      <button @click="store.ExportSave">Export to json</button>
+      <p class="feedback">{{feedback}}</p>
+    </section>
+
+    
 
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
@@ -42,7 +53,7 @@ import { cleanUpJSON, removeInvalid } from '@/js/convertTabsAsJson';
 import { useStore } from '@/stores/store'
 
 const store = useStore()
-const importSucessfull = ref(false)
+const fileSelected = ref(false)
 const importedJson = ref(null)
 const feedback = ref("")
 const feedback2 = ref("")
@@ -55,8 +66,8 @@ function selectFile(e)
   var reader = new FileReader();
   reader.readAsText(file, "UTF-8");
   reader.onload = function (evt) {
-    let fileContents = evt.target.result;
-    importJson(fileContents)
+    importedJson.value = JSON.parse(evt.target.result);
+    fileSelected.value = true
   }
 }
 
@@ -67,18 +78,20 @@ function CreateNewFavs()
 
 function importData()
 {
-  feedback.value = store.AddListOfBookmarks(importedJson.value)
-}
-
-function importJson(json)
-{
-  let converted = JSON.parse(json)
-  converted = cleanUpJSON(converted)
-  converted = removeInvalid(converted)
-  importSucessfull.value = converted.length > 0
-  if(importSucessfull.value)
+  if(store.IsValidJson(importedJson.value))
   {
-    importedJson.value = converted
+    console.log("custom save")
+    feedback.value = store.ImportSave(importedJson.value)
+  }
+  else{
+    console.log("not a custom save")
+    let converted = cleanUpJSON(importedJson.value)
+    converted = removeInvalid(converted)
+    if(converted.length > 0)
+    {
+      importedJson.value = converted
+    }
+    feedback.value = store.AddListOfBookmarks(importedJson.value)
   }
 }
 
@@ -153,6 +166,10 @@ section{
       background-color: $dark;
       color: $white;
     }
+    &.bigger{
+        font-size: 1.5rem;
+        padding: .2rem 1rem;
+      }
   }
 }
 
