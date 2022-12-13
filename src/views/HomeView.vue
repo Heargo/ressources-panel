@@ -1,8 +1,12 @@
 <template>
   <div class="home">
-    <router-link to="/settings" class="topRightIcon">
-      <img src="@/assets/settings.svg" alt="">
-    </router-link>
+    <div class="topRightIcon">
+      <svg @click="store.toggleEditMode()"
+        xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-3 -3 30 30" stroke-width="1.5" stroke="black" :class="{'scale':true,'active':store.editMode}">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
+      </svg>
+      <img src="@/assets/settings.svg" @click="$router.push('/settings')" class="rotate">
+    </div>
 
     <!-- SEARCH BAR -->
     <section class="searchBarContainer" ref="searchBar">
@@ -88,6 +92,33 @@ function search()
   width: 100%;
   z-index: -1;
 }
+
+.rotate{
+  &:hover{
+      transform-origin: center;
+      transform:rotate(180deg);
+  }
+}
+
+.scale{
+  border-radius: 20px;
+  transform:scale(1.2);
+  transform-origin: center;
+
+  &.active{
+    stroke: $dark;
+    background-color: $orange;
+    border:solid 2px $dark;
+  }
+
+  &:hover{
+      border:solid 2px $white;
+      stroke: $white;
+  }
+
+  
+}
+
 .home{
   display: flex;
   flex-direction: column;
@@ -98,12 +129,6 @@ function search()
   height: 100%;
   min-height: 90vh;
 
-  .topRightIcon{
-    &:hover{
-        transform-origin: center;
-        transform:rotate(180deg);
-    }
-}
   .searchBarContainer{
     position:absolute;
     top:40%;

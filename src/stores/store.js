@@ -10,6 +10,7 @@ export const useStore = defineStore('main', {
         return {
           //load from local storage
           content: null,
+          editMode: false,
           searchOptions:{
             shouldSort: true,
             threshold: 0.2,
@@ -23,6 +24,10 @@ export const useStore = defineStore('main', {
         }
       },
       actions: {
+        toggleEditMode()
+        {
+          this.editMode = !this.editMode;
+        },
         LoadContent()
         {
           //let content = localStorage.getItem('content') || jsonContent;
