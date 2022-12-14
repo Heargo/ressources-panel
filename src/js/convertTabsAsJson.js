@@ -17,20 +17,29 @@ export function removeInvalid(json) {
 
     if (json.length == 0) return false;
 
-    let minimumKeys=["name","url","tags","visitCount","lastVisitTime","id","dateAdded","lastModified"];
     for(let i=0;i<json.length;i++)
     {
         let item = json[i];
-        for(let k of minimumKeys)
+        if (IsValidBookmark(item))
         {
-            if (item[k] == undefined)
-            {
-                console.log("invalid json: missing property " + k + " in item " + item.name);
-                json.splice(i,1);
-            } 
-        }
+            json.splice(i,1);
+        } 
     }
     return json;
+}
+
+export function IsValidBookmark(b) {
+    console.log("checking item " + b)
+    let minimumKeys=["name","url","tags","visitCount","lastVisitTime","id","dateAdded","lastModified"];
+    for(let k of minimumKeys)
+    {
+        if (b[k] == undefined)
+        {
+            console.log("invalid json: missing property " + k + " in item " + b.name);
+            return false;
+        } 
+    }
+    return true;
 }
 
 function DeleteUselessProperties(json,propertiesToDelete) {

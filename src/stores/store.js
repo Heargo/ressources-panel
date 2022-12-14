@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import jsonContent from '@/js/content.json'
 import Fuse from 'fuse.js'
-import { hashCode } from '@/js/convertTabsAsJson'
+import { hashCode, IsValidBookmark } from '@/js/convertTabsAsJson'
 
 // useStore could be anything like useUser, useCart 
 // the first argument is a unique id of the store across your application
@@ -10,6 +10,7 @@ export const useStore = defineStore('main', {
         return {
           //load from local storage
           content: null,
+          editMode: false,
           searchOptions:{
             shouldSort: true,
             threshold: 0.2,
@@ -23,6 +24,10 @@ export const useStore = defineStore('main', {
         }
       },
       actions: {
+        toggleEditMode()
+        {
+          this.editMode = !this.editMode;
+        },
         LoadContent()
         {
           //let content = localStorage.getItem('content') || jsonContent;
@@ -54,6 +59,8 @@ export const useStore = defineStore('main', {
             id:hashCode(url),
             dateAdded: Date.now(),
             lastModified: Date.now(),
+            visitCount : 0,
+            lastVisitTime: Date.now(),
             iconUrl: "",
             description: description,
             url: url,
@@ -139,6 +146,52 @@ export const useStore = defineStore('main', {
         {
           this.content = jsonContent;
           localStorage.setItem('content', JSON.stringify(jsonContent));
+        },
+        ImportSave(json)
+        {
+          let feedback = "Success to import bookmarks";
+          //if json is valid
+          if(this.IsValidJson(json))
+          {
+            this.content = json;
+            localStorage.setItem('content', JSON.stringify(this.content));
+          }else{
+            feedback = "Failed to import bookmarks";
+          }
+          return feedback;
+        },
+        ExportSave()
+        {
+          //download json file
+          console.log(this.content)
+          let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.content));
+          console.log(dataStr)
+          var link = document.createElement("a");
+
+          link.setAttribute("href", dataStr);
+          link.setAttribute("download", "bookmarks.json");
+          link.click();
+
+          link.remove();
+          
+        },
+        IsValidJson(json)
+        {
+          if (json == null || json == undefined || !Array.isArray(json)) return false;
+          //check if every element in the list has the minimum required fields
+          let isValid = true;
+          for(let i = 0; i < json.length; i++)
+          {
+            let b = json[i];
+            console.log("is it valid bookmark?",b)
+            if(!IsValidBookmark(b))
+            {
+              console.log("invalid bookmark",b)
+              isValid = false;
+              break;
+            }
+          }
+          return isValid;
         }
 
       }

@@ -15,6 +15,8 @@ $orange: #FCA311;
 $dark-blue: #14213D;
 $grey: #E5E5E5;
 
+$pink:#ff00ff;
+
 
 $dark:#22223b;
 $dark2: rgb(34, 34, 59,0.85);
@@ -23,6 +25,7 @@ $better-blue: #273494;
 $marron:#9a8c98;
 $marronlight:#c9ada7;
 $white:#f1f2f6;
+$green:#37a823;
 
 $formbgcolor: $grey;
 
@@ -58,10 +61,20 @@ $gradient: linear-gradient(90deg, #ff00ff 0%, #00ffff 100%);
     position: fixed;
     top: 1rem;
     right: 1rem;
-    font-size: 1.5rem;
-    width: 35px;
-    height: 35px;
-    transition: all 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: .5rem;
+    img,svg{
+        width: 35px;
+        height: 35px;
+        border :solid 2px transparent;
+    }
+    img,svg,a{
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
 }
 
 section{
