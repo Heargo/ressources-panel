@@ -128,14 +128,13 @@ function addTag(e)
             white-space: nowrap;
         }
         input{
-            background-color: transparent;
-            border-radius: 0;
+            border-radius: 5px;
             max-width: none;
             overflow: hidden;
             text-overflow: ellipsis;
             white-space: nowrap;
             margin:0;
-            padding: 0;
+            padding: .1rem .3rem;
         }
         img{
             width: 20px;
