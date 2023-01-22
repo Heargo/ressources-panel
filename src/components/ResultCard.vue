@@ -1,7 +1,7 @@
 <template>
     <div class="resultCard" @click="openLink">
         <div class="basicInfo">
-            <img :src="('https://www.google.com/s2/favicons?domain='+fav.url)" alt="no image :/">
+            <img :src="('https://www.google.com/s2/favicons?domain='+fav.url+'&sz=64')" alt="no image :/">
             <p v-if="!store.editMode">{{fav.name}}</p>
             <input v-else type="text" v-model="fav.name" :placeholder="result.name" minlength="1">
         </div>
@@ -95,7 +95,7 @@ function addTag(e)
     justify-content: flex-start;
     width: 100%;
     max-width: 300px;
-    background-color: $white;
+    background-color: $background-alternative;
     border-radius: 15px;
     padding: .3rem 0.8rem;
     cursor: pointer;
@@ -107,7 +107,8 @@ function addTag(e)
         padding: 0 1rem;
         max-width: 10ch;
         font-size: 0.8rem;
-        color: $dark;
+        background-color: $background-alternative2;
+        color: $secondary;
     }
 
     .basicInfo{
@@ -120,7 +121,6 @@ function addTag(e)
         margin-bottom: 0.5rem;
         p,input{
             margin: 0;
-            color:$dark;
             font-size: 1.2rem;
             //add ... if too long
             overflow: hidden;
@@ -135,6 +135,7 @@ function addTag(e)
             white-space: nowrap;
             margin:0;
             padding: .1rem .3rem;
+            
         }
         img{
             width: 20px;
@@ -155,8 +156,8 @@ function addTag(e)
             margin: 0;
             padding: 0 1rem;
             font-size: 0.8rem;
-            color: $dark;
-            border:solid 1px $dark;
+            color:$secondary;
+            border:solid 1px $secondary;
             //background-color: #878bff;
             border-radius: 1rem;
             &.removable{
@@ -174,11 +175,5 @@ function addTag(e)
             }
         }
     }
-
-    .score{
-        color:$dark;
-    }
-
-
 }  
 </style>

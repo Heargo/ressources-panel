@@ -99,14 +99,16 @@ function importData()
 
 <style lang="scss" scoped>
 
-h1{
-  color: $white;
-}
+
 
 section{
   margin-top: 2rem;
   width: fit-content;
-
+  background-color: $background-alternative;
+  width: 80%;
+  max-width: 650px;
+  border-radius: 30px;
+  padding: 1rem;
   input{
     border: none;
     border-radius: 1rem;
@@ -114,21 +116,24 @@ section{
     font-size: 1rem;
     outline: none;
     border: 0;
+    background-color: $background-alternative2;
+    color: $text-color;
   }
 
   &.dangerZone{
     h2{
-      color: $dark-red;
+      color: $red;
       font-weight: bold;
       &::after, &::before{
-        background-color: $dark-red;
+        background-color: $red;
       }
     }
     button{
       background-color: $white;
-      color: $dark-red;
+      color: $red;
+      font-weight: bold;
       &:hover{
-        background-color: $dark-red;
+        background-color: $red;
         color: $white;
       }
     }
@@ -141,40 +146,25 @@ section{
     margin: 0;
 
     &::after, &::before{
-    content: "";
-    position: absolute;
-    top:1rem;
-    right: -$line-size;
-    display: block;
-    width: $line-size;
-    height: 2px;
-    background-color: $dark;
-    margin: 0 -1rem;
-  }
-  &::before{
-    right: 0;
-    left:-$line-size;
-    margin: 0 -1rem;
-  }
-  }
-
-  button{
-    font-weight: 600;
-    background-color: $white;
-    color: $dark;
-    &:hover{
-      background-color: $dark;
-      color: $white;
+      content: "";
+      position: absolute;
+      top:1rem;
+      right: -$line-size;
+      display: block;
+      width: $line-size;
+      height: 2px;
+      background-color: $secondary;
+      margin: 0 -1rem;
     }
-    &.bigger{
-        font-size: 1.5rem;
-        padding: .2rem 1rem;
-      }
+    &::before{
+      right: 0;
+      left:-$line-size;
+      margin: 0 -1rem;
+    }
   }
 }
 
 .feedback{
-  color: $dark;
   text-align: center;
 }
 
@@ -187,16 +177,23 @@ section{
 }
 
 button{
-  background-color: $white;
   border: none;
   border-radius: 1rem;
   padding: .5rem .8rem;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  background-color: $button;
+  color: $button-txt;
+  filter:brightness(.9);
   &:hover{
-    background:$dark;
-    color: $white;
+    transform: scale(1.05);
+    //make the all button darker (filter)
+    filter:brightness(1.1)
+  }
+  &.bigger{
+    font-size: 1.5rem;
+    padding: .2rem 1rem;
   }
 }
 

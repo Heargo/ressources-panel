@@ -1,6 +1,6 @@
 <template>
     <div class="favCard" @click="openLink">
-        <img :src="('https://www.google.com/s2/favicons?domain='+result.url)" alt="no image :/">
+        <img :src="('https://www.google.com/s2/favicons?domain='+result.url+'&sz=64')" alt="no image :/">
         <p class="name">{{result.name}}</p>
     </div>
 </template>
@@ -31,7 +31,7 @@ function openLink()
     position: relative;
     width: $card-size;
     height: $card-size;
-    background-color: $white;
+    background-color: $secondary;
     border-radius: 20%;
     padding: .2rem;
     cursor: pointer;
@@ -45,7 +45,6 @@ function openLink()
     p{
         display: none;
         margin: 0;
-        color:$dark;
         font-size: 1.1rem;
         width: 200px;
         //add ... if too long
