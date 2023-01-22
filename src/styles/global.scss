@@ -8,13 +8,24 @@
 //-----------VARIABLES-----------
 //-------------------------------
 
-$red:rgb(223, 52, 52);
-$dark-red :#64141ecc;
-$white: white;
-$orange: #FCA311;
-$dark-blue: #14213D;
-$grey: #E5E5E5;
+$background:#16161a;
+$background-alternative:#222227;
+$background-alternative2:#2d2d33;
+$headline:#fffffe;  
+//$button:#7f5af0;
+$button:#2cb67d;
+$button-txt:#fffffe;
+$text-color:#94a1b2;
 
+$highlight:#7f5af0;
+$secondary:#72757e;
+$tertiary:#2cb67d;
+$black:#010101;
+
+$red:#df3434;
+$dark-red :#64141ecc;
+$orange: #FCA311;
+$grey: #E5E5E5;
 $pink:#ff00ff;
 
 
@@ -84,7 +95,6 @@ section{
     padding: 0;
 
     h2{
-      color: $dark;
       font-weight: normal;
     }
   }

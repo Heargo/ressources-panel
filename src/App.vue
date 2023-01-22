@@ -1,11 +1,10 @@
 <template>
   <!-- BACKGROUND -->
-  <img src="@/assets/waves.svg" alt="bg" class="animatedWaves">
-
+  <img src="@/assets/circle-scatter-haikei.svg" alt="bg" class="animatedWaves">
   <router-view/>
 </template>
 
-<style>
+<style lang="scss">
 .animatedWaves{
   position: fixed;
   top: 0;
@@ -18,19 +17,6 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
-  color: #2c3e50;
-}
-
-nav {
-  padding: 30px;
-}
-
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
-}
-
-nav a.router-link-exact-active {
-  color: #42b983;
+  color: $text-color;
 }
 </style>

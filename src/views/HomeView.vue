@@ -104,11 +104,12 @@ function search()
   border-radius: 20px;
   transform:scale(1.2);
   transform-origin: center;
+  stroke:$text-color;
 
   &.active{
-    stroke: $dark;
-    background-color: $orange;
-    border:solid 2px $dark;
+    stroke: $black;
+    background-color: $tertiary;
+    border:solid 2px $black;
   }
 
   &:hover{
@@ -146,7 +147,8 @@ function search()
       outline: none;
       border: none;
       padding: 0 1rem;
-      background-color: $white;
+      background-color: $background-alternative;
+      color: $text-color;
     }
 
     img{
@@ -170,7 +172,6 @@ function search()
 
   .infos{
     font-size: 1.5rem;
-    color: $dark;
     margin-top: 1rem;
   }
   
