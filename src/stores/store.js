@@ -50,7 +50,8 @@ export const useStore = defineStore('main', {
         AddBookmark(data)
         {
           let {name, url, description, tags} = data;
-          if (name == null || url == null || description == null || tags == null) {
+          if (name == null || url == null || description == null || tags == null
+              || name == "" || url == "" || description == "" || tags == "") {
             return "Please fill all fields";
           }
 
