@@ -4,6 +4,13 @@
   <router-view/>
 </template>
 
+<script setup>
+import { useAuth } from '@/stores/auth'
+const auth = useAuth()
+auth.SetupClient()
+</script>
+
+
 <style lang="scss">
 .animatedWaves{
   position: fixed;

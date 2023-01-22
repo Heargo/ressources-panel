@@ -1,36 +1,35 @@
 <template>
   <div class="settings">
-    <h1 v-if="store.account">{{ store.account.email }}</h1>
-    <h1 v-else>Sync to cloud</h1>
+    <h1>co ?{{ auth.IsConnected }}</h1>
+    <h1>Sync to cloud</h1>
 
     <!-- HOME BUTTON -->
     <router-link to="/" class="topRightIcon">
       <img src="@/assets/home.svg" alt="">
     </router-link>
-
     <!-- LOGIN -->
-    <section class="flexCol" v-show="loginPanel && store.account==null">
+    <section class="flexCol" v-show="loginPanel && !auth.IsConnected">
       <h2>Login</h2>
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password"> 
-      <button @click="login">Login</button>
-      <p>Don't have an account ? <span @click="toggleLogin()" class="underline">Sign up</span></p>
+      <button @click="Login">Login</button>
+      <p>Don't have an account ? <span @click="ToggleLogin()" class="underline">Sign up</span></p>
       <p v-show="feedback!=null && feedback!=''" class="feedback">{{feedback}}</p>
     </section>
 
     <!-- SIGN UP -->
-    <section class="flexCol" v-show="!loginPanel && store.account==null">
+    <section class="flexCol" v-show="!loginPanel && !auth.IsConnected">
       <h2>Sign up</h2>
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password">
       <input type="password" placeholder="password verification" v-model="formValue.passwordVerification">
-      <button @click="signUp">Create account</button>
-      <p>Already have an account ? <span @click="toggleLogin()" class="underline">Login</span></p>
+      <button @click="SignUp">Create account</button>
+      <p>Already have an account ? <span @click="ToggleLogin()" class="underline">Login</span></p>
       <p v-show="feedback!=null && feedback!=''" class="feedback">{{feedback}}</p>
     </section>
 
     <!-- PROFILE -->
-    <section class="flexCol" v-show="store.account!=null">
+    <section class="flexCol" v-show="auth.IsConnected">
       <h2>Account</h2>
       <p>Maybe for later...</p>
     </section>
@@ -38,30 +37,28 @@
 
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
-      <button @click="store.ResetContent">Reset content</button>
-      <button @click="store.ResetContent">Reset visitCount</button>
+      <button @click="auth.DeleteAccount">Delete account</button>
     </section>
   </div>
 </template>
 
 <script setup>
 import { ref } from 'vue'
-import { useStore } from '@/stores/store'
-import { Account, ID } from "appwrite";
+import { useAuth } from '@/stores/auth'
 
-const store = useStore()
+const auth = useAuth()
 const loginPanel = ref(true)
 const formValue =ref({})
 const feedback = ref(null)
+auth.CheckConnection()
 
-store.TryUpdateAccount();
 
-function toggleLogin()
+function ToggleLogin()
 {
   loginPanel.value = ! loginPanel.value
 }
 
-function signUp()
+async function SignUp()
 {
   var form = formValue.value
   //all fields are required
@@ -76,25 +73,12 @@ function signUp()
     return
   }
 
-  createAccount(form.email,form.password)
+  feedback.value = await auth.CreateAccount(form.email,form.password)
 }
 
-function createAccount(email,password)
-{
-  const account = new Account(store.client);
-  // Register User
-  account.create(
-      ID.unique(),
-      email,
-      password,
-  ).then(() => {
-    feedback.value= "Account created !";
-  }, error => { 
-    feedback.value= error.message;
-  });
-}
 
-function login()
+
+async function Login()
 {
   var form = formValue.value
   //all fields are required
@@ -103,25 +87,8 @@ function login()
     feedback.value = "All fields are required"
     return
   }
-  loginApprite(form.email,form.password)
-
+  feedback.value = await auth.Login(form.email,form.password)
 }
-
-function loginApprite(email,password)
-{
-  //login only if the user is verified
-  const account = new Account(store.client);
-  account.createEmailSession(
-      email,
-      password,
-  ).then(() => {
-    feedback.value= "Logged in !";
-    store.UpdateAccount(account)
-  }, error => { 
-    feedback.value= error.message;
-  });
-}
-
 
 
 

@@ -2,13 +2,7 @@ import { defineStore } from 'pinia'
 import jsonContent from '@/js/content.json'
 import Fuse from 'fuse.js'
 import { hashCode, IsValidBookmark } from '@/js/convertTabsAsJson'
-import { Client,Account } from "appwrite";
-
-const client = new Client();
-client
-.setEndpoint('https://appwrite.vps.heargo.dev/v1') // Your API Endpoint
-.setProject('63cc2fa2677d376a81ea') // Your project ID
-;
+import { Client, Account } from "appwrite";
 //.setJWT(localStorage.getItem('jwt') || null) //WTF
 
 
@@ -22,8 +16,9 @@ export const useStore = defineStore('main', {
           editMode: false,
           lastCloudSync: null,
           account:null,
-          client:client,
-          //JWT:localStorage.getItem('jwt') || null,
+          client:null,
+          JWT:localStorage.getItem('jwt') || null,
+          lastJWTUpdate: null,
           searchOptions:{
             shouldSort: true,
             threshold: 0.2,
@@ -37,6 +32,38 @@ export const useStore = defineStore('main', {
         }
       },
       actions: {
+        SetupClient()
+        {
+          this.client = new Client();
+          this.client
+          .setEndpoint('https://appwrite.vps.heargo.dev/v1') // Your API Endpoint
+          .setProject('63cc2fa2677d376a81ea') // Your project ID
+          ;
+        },
+        async Login(email,password)
+        {
+          this.account = new Account(this.client);
+          var response;
+          try{
+            await this.account.createEmailSession(email,password);
+            response = "Login successful";
+          }catch(error){
+            response = error.message;
+          }
+          return response;
+        },
+        IsConnected() {
+          const promise = this.account.getSessions();
+          return promise.then(() => {
+
+            localStorage.setItem('isConnected', 'true')
+            return true;
+          }, () => {
+            localStorage.removeItem('isConnected')
+            return false;
+          }
+          );
+        },
         toggleEditMode()
         {
           this.editMode = !this.editMode;
@@ -51,41 +78,6 @@ export const useStore = defineStore('main', {
           }else{
             this.content = JSON.parse(localStorage.getItem('content'));
           }
-
-        },
-        GetCloudStatus()
-        {
-          
-        },
-        TryUpdateAccount()
-        {
-          //try to login
-          var account = new Account(client)
-          account.get().then((response) => {
-            this.account = response;
-            console.log(response);
-          }, (error) => {
-            console.log(error);
-            this.account = null;
-          });
-        },
-        UpdateAccount(account)
-        {
-          //update account info
-          account.get().then((response) => {
-            this.account = response;
-          },(error) => {
-            console.log(error);
-          });
-
-          //update jwt
-          account.createJWT().then((response) => {
-            //this.JWT = response;
-            console.log(response)
-            localStorage.setItem('jwt', response.jwt);
-          }, (error) => {
-            console.log(error);
-          });
 
         },
         search(query) {
