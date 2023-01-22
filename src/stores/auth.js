@@ -6,8 +6,8 @@ export const useAuth = defineStore('auth', {
         return {
           client:null,
           account:null,
+          accountInfo:null,
           IsConnected:JSON.parse(localStorage.getItem('isConnected')) || false,
-          token:localStorage.getItem('jwt-token') || null,
         }
       },
       actions: {
@@ -20,17 +20,7 @@ export const useAuth = defineStore('auth', {
           ;
 
           this.account = new Account(this.client);
-
-          if(this.token != null)
-          {
-            console.log("there is a token in local storage")
-            this.client.setJWT(this.token);
-          }
-          else
-          {
-            localStorage.removeItem('isConnected')
-            this.IsConnected = false;
-          }
+          this.CheckConnection();
           console.log("Client setup","IsConnected: " , this.IsConnected,"Token: ", this.token)
         },
         async CreateAccount(email,password)
@@ -58,26 +48,30 @@ export const useAuth = defineStore('auth', {
           this.CheckConnection();
           return response;
         },
+        async Logout() {
+          try {
+              await this.account.deleteSessions();
+              this.IsConnected = false;
+              this.accountInfo = null;
+              console.log("Logout successful")
+          } catch (error) {
+              console.log(error)
+          }
+        },
         async CheckConnection() {
           if(this.account == null){
             this.IsConnected = false;
-            localStorage.removeItem('isConnected')
-            localStorage.removeItem('jwt-token')
           }
           try {
               const session = await this.account.get();
+              console.log("Session: ", session)
               if (session) {
                   this.IsConnected = true;
-                  localStorage.setItem('isConnected', 'true')
-                  var jwt = await this.account.createJWT();
-                  localStorage.setItem('jwt-token', jwt)
-                  console.log("JWT: ", jwt)
+                  this.accountInfo = session;
               }
           } catch (error) {
               //console.log(error)
               this.IsConnected = false;
-              localStorage.removeItem('isConnected')
-              localStorage.removeItem('jwt-token')
           }
           console.log("IsConnected: " + this.IsConnected)
       }

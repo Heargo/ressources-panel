@@ -2,7 +2,7 @@ import { defineStore } from 'pinia'
 import jsonContent from '@/js/content.json'
 import Fuse from 'fuse.js'
 import { hashCode, IsValidBookmark } from '@/js/convertTabsAsJson'
-import { Client, Account } from "appwrite";
+import { Storage, ID, Permission, Role  } from "appwrite";
 //.setJWT(localStorage.getItem('jwt') || null) //WTF
 
 
@@ -14,11 +14,6 @@ export const useStore = defineStore('main', {
           //load from local storage
           content: null,
           editMode: false,
-          lastCloudSync: null,
-          account:null,
-          client:null,
-          JWT:localStorage.getItem('jwt') || null,
-          lastJWTUpdate: null,
           searchOptions:{
             shouldSort: true,
             threshold: 0.2,
@@ -32,45 +27,12 @@ export const useStore = defineStore('main', {
         }
       },
       actions: {
-        SetupClient()
-        {
-          this.client = new Client();
-          this.client
-          .setEndpoint('https://appwrite.vps.heargo.dev/v1') // Your API Endpoint
-          .setProject('63cc2fa2677d376a81ea') // Your project ID
-          ;
-        },
-        async Login(email,password)
-        {
-          this.account = new Account(this.client);
-          var response;
-          try{
-            await this.account.createEmailSession(email,password);
-            response = "Login successful";
-          }catch(error){
-            response = error.message;
-          }
-          return response;
-        },
-        IsConnected() {
-          const promise = this.account.getSessions();
-          return promise.then(() => {
-
-            localStorage.setItem('isConnected', 'true')
-            return true;
-          }, () => {
-            localStorage.removeItem('isConnected')
-            return false;
-          }
-          );
-        },
         toggleEditMode()
         {
           this.editMode = !this.editMode;
         },
         LoadContent()
         {
-          //let content = localStorage.getItem('content') || jsonContent;
           if(localStorage.getItem('content') == null)
           {
             localStorage.setItem('content', JSON.stringify(jsonContent));
@@ -78,7 +40,44 @@ export const useStore = defineStore('main', {
           }else{
             this.content = JSON.parse(localStorage.getItem('content'));
           }
-
+          console.log("Content loaded")
+        },
+        async SaveContent(userID,client)
+        {
+          console.log("Saving content")
+          //create a file to upload. Contains the content
+          let file = new File([JSON.stringify(this.content)], userID+"-favorites.json", {type: "application/json"});
+          //upload the file
+          const storage = new Storage(client);
+          var response;
+          try{
+            await storage.createFile('63cdc26fcca5b0af2dbd', ID.unique(), file,[
+              Permission.delete(Role.user(userID)),
+              Permission.read(Role.user(userID)),
+              Permission.update(Role.user(userID))
+            ]);
+            response = "Content saved";
+          }
+          catch(error){
+            response = error.message;
+            console.log(error)
+          }
+          console.log(response)
+          return response;
+        },
+        async ListFiles(client)
+        {
+          const storage = new Storage(client);
+          var response;
+          try{
+            response = await storage.listFiles('63cdc26fcca5b0af2dbd');
+          }
+          catch(error){
+            response = error.message;
+            console.log(error)
+          }
+          console.log(response)
+          return response;
         },
         search(query) {
           const fuse = new Fuse(this.content, this.searchOptions);

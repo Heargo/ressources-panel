@@ -45,7 +45,7 @@ let c = cleanUpJSON(json)
 console.log(c)
 
 const store = useStore()
-store.LoadContent()
+//store.LoadContent()
 
 var searchQuery = ref('')
 var results = ref([])

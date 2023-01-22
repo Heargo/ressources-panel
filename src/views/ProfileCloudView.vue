@@ -1,12 +1,13 @@
 <template>
   <div class="settings">
-    <h1>co ?{{ auth.IsConnected }}</h1>
-    <h1>Sync to cloud</h1>
+    <h1 v-if="auth.accountInfo">Welcome {{ auth.accountInfo.email }}</h1>
+    <h1 v-else>Sync to cloud</h1>
 
     <!-- HOME BUTTON -->
     <router-link to="/" class="topRightIcon">
       <img src="@/assets/home.svg" alt="">
     </router-link>
+
     <!-- LOGIN -->
     <section class="flexCol" v-show="loginPanel && !auth.IsConnected">
       <h2>Login</h2>
@@ -31,7 +32,10 @@
     <!-- PROFILE -->
     <section class="flexCol" v-show="auth.IsConnected">
       <h2>Account</h2>
-      <p>Maybe for later...</p>
+      <p>You have {{ 10 }} favorites saved</p>
+      <button @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</button>
+      <button @click="store.ListFiles(auth.client)">List all files</button>
+      <button @click="auth.Logout()">Logout</button>
     </section>
     
 
@@ -45,12 +49,15 @@
 <script setup>
 import { ref } from 'vue'
 import { useAuth } from '@/stores/auth'
+import { useStore } from '@/stores/store'
 
 const auth = useAuth()
+const store = useStore()
 const loginPanel = ref(true)
 const formValue =ref({})
 const feedback = ref(null)
-auth.CheckConnection()
+
+console.log(store)
 
 
 function ToggleLogin()

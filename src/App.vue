@@ -6,8 +6,16 @@
 
 <script setup>
 import { useAuth } from '@/stores/auth'
+import { useStore } from '@/stores/store'
+
 const auth = useAuth()
+const store = useStore()
+
 auth.SetupClient()
+auth.CheckConnection()
+
+store.LoadContent()
+
 </script>
 
 
