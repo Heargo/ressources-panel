@@ -2,6 +2,7 @@ import { defineStore } from 'pinia'
 import jsonContent from '@/js/content.json'
 import Fuse from 'fuse.js'
 import { hashCode, IsValidBookmark } from '@/js/convertTabsAsJson'
+import { Storage, ID, Permission, Role  } from "appwrite";
 
 // useStore could be anything like useUser, useCart 
 // the first argument is a unique id of the store across your application
@@ -28,17 +29,139 @@ export const useStore = defineStore('main', {
         {
           this.editMode = !this.editMode;
         },
-        LoadContent()
+        SetContent(newContent)
         {
-          //let content = localStorage.getItem('content') || jsonContent;
-          if(localStorage.getItem('content') == null)
-          {
-            localStorage.setItem('content', JSON.stringify(jsonContent));
-            this.content = jsonContent;
-          }else{
-            this.content = JSON.parse(localStorage.getItem('content'));
-          }
+          console.log("setting content to ",newContent) 
+          this.content = newContent;
+          localStorage.setItem('content', JSON.stringify(newContent));
+        },
+        async LoadContent(client,account)
+        {
+          //get content from appwrite
+          try{
+            let files = await this.ListFiles(client);
+            let file = files[0]
+            let storage = new Storage(client);
+            //get file 
+            let jwt = await account.createJWT()
+            console.log("getting file "+file.$id+" from server. File infos ",file)
+            const result = storage.getFileView('63cdc26fcca5b0af2dbd', file.$id);
+            //get the content with the good headers
+            let response = await fetch(result,{
+              headers: {
+                'X-Appwrite-JWT': jwt.jwt
+              }
+            });
+            console.log("response is ",response)
+            let json = await response.json();
+            console.log("json is ",json)
+            this.SetContent(json)
 
+          }
+          //if not possible get localstorage instead
+          catch(error){
+            //throw error
+            console.error(error)
+            console.log("Error while fetching files from server, using local storage instead")
+            if(localStorage.getItem('content') == null)
+            {
+              this.SetContent(jsonContent)
+            }else{
+              this.SetContent(JSON.parse(localStorage.getItem('content')))
+            }
+          }
+          console.log("Content loaded")
+        },
+        async SaveContent(userID,client)
+        {
+          console.log("Saving content")
+          var response;
+          try{
+            let files = await this.ListFiles(client);
+            console.log("files",files)
+            if(files.length == 0)
+            {
+              this.UploadToCloud(userID,client,ID.unique())
+              response = "Content saved";
+            }
+            else
+            {
+              console.log("updating file "+files[0].$id)
+              await this.DeleteCloudContent(client,files[0].$id)
+              await this.UploadToCloud(userID,client,ID.unique())
+              console.log("updated done")
+              response = "Content saved"
+            }
+            //update file 
+            //await this.UpdateFile(client,id)
+          }
+          catch(error){
+            response = error.message;
+            console.log(error)
+          }
+          console.log(response)
+          return response;
+        },
+        async UpdateFile(client,id)
+        {
+          console.log("Updating content")
+          let storage = new Storage(client);
+          await storage.updateFile('63cdc26fcca5b0af2dbd', id);
+        },
+        async UploadToCloud(userID,client,id)
+        {
+          console.log("Uploading content")
+          //create a file to upload. Contains the content
+          let file = new File([JSON.stringify(this.content)], userID+"-favorites.json", {type: "application/json"});
+          //upload the file
+          const storage = new Storage(client);
+          var response;
+          try{
+            await storage.createFile('63cdc26fcca5b0af2dbd', id, file,[
+              Permission.delete(Role.user(userID)),
+              Permission.read(Role.user(userID)),
+              Permission.update(Role.user(userID))
+            ]);
+            response = "Content uploaded";
+          }
+          catch(error){
+            response = error.message;
+            console.log(error)
+          }
+          return response;
+        },
+        async DeleteCloudContent(client)
+        {
+          console.log("Deleting content")
+          //create a file to upload. Contains the content
+          const storage = new Storage(client);
+          var response;
+          try{
+            let files = await this.ListFiles(client);
+            console.log("files",files)
+            console.log("deleting file "+files[0].$id)
+            await storage.deleteFile('63cdc26fcca5b0af2dbd', files[0].$id);
+            response = true;    
+          }
+          catch(error){
+            response =false;
+            console.log(error)
+          }
+          return response;
+        },
+        async ListFiles(client)
+        {
+          const storage = new Storage(client);
+          var response;
+          try{
+            response = await storage.listFiles('63cdc26fcca5b0af2dbd');
+            response = response.files;
+          }
+          catch(error){
+            response = [];
+            console.log(error)
+          }
+          return response;
         },
         search(query) {
           const fuse = new Fuse(this.content, this.searchOptions);
@@ -73,7 +196,7 @@ export const useStore = defineStore('main', {
           if(b.bookmarks.length != 0)
           {
             this.content.push(b.bookmarks[0]);
-            localStorage.setItem('content', JSON.stringify(this.content));
+            this.SetContent(this.content)
           }
           else
             feedback = "Bookmark already exists";
@@ -83,7 +206,7 @@ export const useStore = defineStore('main', {
         {
           let index = this.content.findIndex(x => x.id == id);
           this.content.splice(index,1);
-          localStorage.setItem('content', JSON.stringify(this.content));
+          this.SetContent(this.content)
         },
         UpdateBookmark(id, updateContent)
         {
@@ -91,7 +214,7 @@ export const useStore = defineStore('main', {
           for(let key in updateContent){
             this.content[index][key] = updateContent[key];
           }
-          localStorage.setItem('content', JSON.stringify(this.content));
+          this.SetContent(this.content)
         },
         IncrementVisitCount(id)
         {
@@ -101,10 +224,11 @@ export const useStore = defineStore('main', {
 
           //last visit
           this.content[index].lastVisitTime = Date.now();
-          localStorage.setItem('content', JSON.stringify(this.content));
+          this.SetContent(this.content)
         },
         GetMostVisited(n)
         {
+          if(this.content ==null) return [];
           let mostVisited = this.content.sort((a,b) => b.visitCount - a.visitCount).slice(0,n);
           //get first n on most visited where visit count > 0
           mostVisited = mostVisited.filter(x => x.visitCount > 0);
@@ -119,7 +243,7 @@ export const useStore = defineStore('main', {
             let data= this.RemoveDuplicates(bookmarks)
             bookmarks = data.bookmarks;
             this.content = this.content.concat(bookmarks);
-            localStorage.setItem('content', JSON.stringify(this.content));
+            this.SetContent(this.content)
             feedback = "Success to import "+bookmarks.length +" bookmarks. "+data.feedback;
           }
           catch(e)
@@ -145,8 +269,7 @@ export const useStore = defineStore('main', {
         },
         ResetContent()
         {
-          this.content = jsonContent;
-          localStorage.setItem('content', JSON.stringify(jsonContent));
+          this.SetContent(jsonContent)
         },
         ImportSave(json)
         {
@@ -155,7 +278,7 @@ export const useStore = defineStore('main', {
           if(this.IsValidJson(json))
           {
             this.content = json;
-            localStorage.setItem('content', JSON.stringify(this.content));
+            this.SetContent(this.content)
           }else{
             feedback = "Failed to import bookmarks";
           }
