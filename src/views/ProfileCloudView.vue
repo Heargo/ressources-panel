@@ -35,7 +35,7 @@
       <p>You have {{ 10 }} favorites saved</p>
       <button @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</button>
       <button @click="store.ListFiles(auth.client)">List all files</button>
-      <button @click="auth.Logout()">Logout</button>
+      <button @click="Logout">Logout</button>
     </section>
     
 
@@ -56,8 +56,6 @@ const store = useStore()
 const loginPanel = ref(true)
 const formValue =ref({})
 const feedback = ref(null)
-
-console.log(store)
 
 
 function ToggleLogin()
@@ -83,6 +81,11 @@ async function SignUp()
   feedback.value = await auth.CreateAccount(form.email,form.password)
 }
 
+function Logout()
+{
+  auth.Logout()
+  store.ResetContent()
+}
 
 
 async function Login()
@@ -94,7 +97,10 @@ async function Login()
     feedback.value = "All fields are required"
     return
   }
-  feedback.value = await auth.Login(form.email,form.password)
+  let response = await auth.Login(form.email,form.password)
+  //if login success, load content from cloud
+  if(response == auth.LOGIN_SUCCESS)
+    store.LoadContent(auth.client, auth.account)
 }
 
 

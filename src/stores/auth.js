@@ -8,6 +8,7 @@ export const useAuth = defineStore('auth', {
           account:null,
           accountInfo:null,
           IsConnected:JSON.parse(localStorage.getItem('isConnected')) || false,
+          LOGIN_SUCCESS:"Login successful",
         }
       },
       actions: {
@@ -21,7 +22,6 @@ export const useAuth = defineStore('auth', {
 
           this.account = new Account(this.client);
           this.CheckConnection();
-          console.log("Client setup","IsConnected: " , this.IsConnected,"Token: ", this.token)
         },
         async CreateAccount(email,password)
         {
@@ -41,7 +41,7 @@ export const useAuth = defineStore('auth', {
           var response;
           try{
             await this.account.createEmailSession(email,password);
-            response = "Login successful";
+            response = this.LOGIN_SUCCESS;
           }catch(error){
             response = error.message;
           }
@@ -53,7 +53,6 @@ export const useAuth = defineStore('auth', {
               await this.account.deleteSessions();
               this.IsConnected = false;
               this.accountInfo = null;
-              console.log("Logout successful")
           } catch (error) {
               console.log(error)
           }
@@ -64,16 +63,17 @@ export const useAuth = defineStore('auth', {
           }
           try {
               const session = await this.account.get();
-              console.log("Session: ", session)
               if (session) {
                   this.IsConnected = true;
                   this.accountInfo = session;
               }
           } catch (error) {
-              //console.log(error)
+              console.log("Not connected")
               this.IsConnected = false;
           }
-          console.log("IsConnected: " + this.IsConnected)
+      },
+      DeleteAccount(){
+        
       }
       }
 })

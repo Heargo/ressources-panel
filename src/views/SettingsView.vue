@@ -16,33 +16,43 @@
       <!-- tags (multi selection input) -->
       <input type="text" placeholder="Tag1, tag2, etc.." v-model="newFav.tags">
       <button @click="CreateNewFavs">Add a new fav</button>
-      <p class="feedback">{{feedback2}}</p>
+      <p v-if="feedback2" class="feedback">{{feedback2}}</p>
     </section>
 
     <!-- Import json -->
     <section class="flexCol">
-      <h2>Import favs</h2>
+      <h2>Import</h2>
       <p>Import Firefix bookmarks or custom saved in .json format.</p>
       <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
       <!-- <label for="file">Import</label> -->
       <button v-if="fileSelected" @click="importData">Import</button>
-      <p class="feedback">{{feedback}}</p>
+      <p v-if="feedback" class="feedback">{{feedback}}</p>
     </section>
 
     <!-- Export json -->
     <section class="flexCol">
-      <h2>Export data</h2>
-      <p>Export the current {{store.content.length}} saved bookmarks (include default + custom)</p>
+      <h2>Export</h2>
+      <p>Export the current {{store.content.length}} saved bookmarks (include default + custom) in .json format</p>
       <button @click="store.ExportSave">Export to json</button>
-      <p class="feedback">{{feedback}}</p>
-    </section>
-
-    
+      <p v-if="feedback" class="feedback">{{feedback}}</p>
+    </section>    
 
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
       <button @click="store.ResetContent">Reset content</button>
       <button @click="store.ResetContent">Reset visitCount</button>
+    </section>
+
+    <section class="flexCol">
+      <h2>About</h2>
+      <p class="justify">This website is using cookies and localstorage to :
+      <br><br>
+      <ul>
+        <li>store information for cloud syncronisation (if an account is created by an user)</li>
+        <li>store locally custom changes to the default set of bookmark made by the user.</li>
+      </ul>
+      <br>
+      The backend of this application is powered by <a href="https://appwrite.io/">Appwrite</a>. All password are encrypted.</p>
     </section>
   </div>
 </template>
@@ -174,6 +184,7 @@ section{
   align-items: center;
   justify-content: center;
   gap: 1rem;
+  padding-bottom: 1rem;
 }
 
 button{
@@ -203,6 +214,18 @@ button{
   justify-content: center;
   align-items: center;
   gap: 1rem;
+
+  ul{
+    margin: 0;
+  }
+}
+
+.justify{
+  text-align: justify;
+  a {
+    color: $tertiary;
+    text-decoration: underline;
+  }
 }
 
 
