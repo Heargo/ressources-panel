@@ -1,6 +1,6 @@
 <template>
   <div class="settings">
-    <h1 v-if="auth.accountInfo">Welcome {{ auth.accountInfo.email }}</h1>
+    <h1 v-if="auth.accountInfo">Welcome {{ auth.accountInfo.email }} !</h1>
     <h1 v-else>Sync to cloud</h1>
 
     <!-- HOME BUTTON -->
@@ -32,16 +32,17 @@
     <!-- PROFILE -->
     <section class="flexCol" v-show="auth.IsConnected">
       <h2>Account</h2>
-      <p>You have {{ 10 }} favorites saved</p>
+      <p>You have {{ store.content.length }} favorites saved</p>
       <button @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</button>
-      <button @click="store.ListFiles(auth.client)">List all files</button>
-      <button @click="Logout">Logout</button>
+      
     </section>
     
 
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
-      <button @click="auth.DeleteAccount">Delete account</button>
+      <p>Work in progress...</p>
+      <button @click="Logout">Logout</button>
+      <!-- <button @click="auth.DeleteAccount">Delete account</button> -->
     </section>
   </div>
 </template>
@@ -100,7 +101,7 @@ async function Login()
   let response = await auth.Login(form.email,form.password)
   //if login success, load content from cloud
   if(response == auth.LOGIN_SUCCESS)
-    store.LoadContent(auth.client, auth.account)
+    store.LoadContent(auth.client)
 }
 
 

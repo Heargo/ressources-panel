@@ -14,7 +14,7 @@ const store = useStore()
 auth.SetupClient()
 auth.CheckConnection()
 
-store.LoadContent(auth.client, auth.account)
+store.LoadContent(auth.client)
 
 </script>
 

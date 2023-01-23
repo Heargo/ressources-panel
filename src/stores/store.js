@@ -35,26 +35,21 @@ export const useStore = defineStore('main', {
           this.content = newContent;
           localStorage.setItem('content', JSON.stringify(newContent));
         },
-        async LoadContent(client,account)
+        async LoadContent(client)
         {
           //get content from appwrite
           try{
+
             let files = await this.ListFiles(client);
             let file = files[0]
             let storage = new Storage(client);
-            //get file 
-            let jwt = await account.createJWT()
-            console.log("getting file "+file.$id+" from server. File infos ",file)
+
+            //get file url
             const result = storage.getFileView('63cdc26fcca5b0af2dbd', file.$id);
-            //get the content with the good headers
-            let response = await fetch(result,{
-              headers: {
-                'X-Appwrite-JWT': jwt.jwt
-              }
-            });
-            console.log("response is ",response)
+
+            //get the content of the file
+            let response = await fetch(result,{credentials:"include"});
             let json = await response.json();
-            console.log("json is ",json)
             this.SetContent(json)
 
           }
