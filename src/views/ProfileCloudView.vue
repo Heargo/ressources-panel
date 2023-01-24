@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div class="flexCol">
     <h1 v-if="auth.accountInfo">Welcome {{ auth.accountInfo.email }} !</h1>
     <h1 v-else>Sync to cloud</h1>
 
@@ -13,9 +13,9 @@
       <h2>Login</h2>
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password"> 
-      <button @click="Login">Login</button>
+      <ButtonComponent @click="Login">Login</ButtonComponent>
       <p>Don't have an account ? <span @click="ToggleLogin()" class="underline">Sign up</span></p>
-      <p v-show="feedback!=null && feedback!=''" class="feedback">{{feedback}}</p>
+      <p v-show="feedback!=null && feedback!=''" class="text-center">{{feedback}}</p>
     </section>
 
     <!-- SIGN UP -->
@@ -24,16 +24,16 @@
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password">
       <input type="password" placeholder="password verification" v-model="formValue.passwordVerification">
-      <button @click="SignUp">Create account</button>
+      <ButtonComponent @click="SignUp">Create account</ButtonComponent>
       <p>Already have an account ? <span @click="ToggleLogin()" class="underline">Login</span></p>
-      <p v-show="feedback!=null && feedback!=''" class="feedback">{{feedback}}</p>
+      <p v-show="feedback!=null && feedback!=''" class="text-center">{{feedback}}</p>
     </section>
 
     <!-- PROFILE -->
     <section class="flexCol" v-show="auth.IsConnected">
       <h2>Account</h2>
       <p>You have {{ store.content.length }} favorites saved</p>
-      <button @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</button>
+      <ButtonComponent @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</ButtonComponent>
       
     </section>
     
@@ -41,7 +41,7 @@
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
       <p>Work in progress...</p>
-      <button @click="Logout">Logout</button>
+      <ButtonComponent @click="Logout" classes="red">Logout</ButtonComponent>
       <!-- <button @click="auth.DeleteAccount">Delete account</button> -->
     </section>
   </div>
@@ -51,6 +51,9 @@
 import { ref } from 'vue'
 import { useAuth } from '@/stores/auth'
 import { useStore } from '@/stores/store'
+
+//components
+import ButtonComponent from '@/components/ButtonComponent.vue'
 
 const auth = useAuth()
 const store = useStore()
@@ -109,120 +112,5 @@ async function Login()
 </script>
 
 <style lang="scss" scoped>
-
-
-
-section{
-  margin-top: 2rem;
-  width: fit-content;
-  background-color: $background-alternative;
-  width: 80%;
-  max-width: 650px;
-  border-radius: 30px;
-  padding: 1rem;
-  input{
-    border: none;
-    border-radius: 1rem;
-    padding: .5rem .8rem;
-    font-size: 1rem;
-    outline: none;
-    border: 0;
-    background-color: $background-alternative2;
-    color: $text-color;
-  }
-
-  &.dangerZone{
-    h2{
-      color: $red;
-      font-weight: bold;
-      &::after, &::before{
-        background-color: $red;
-      }
-    }
-    button{
-      background-color: $white;
-      color: $red;
-      font-weight: bold;
-      &:hover{
-        background-color: $red;
-        color: $white;
-      }
-    }
-  }
-  
-  h2{
-    position: relative;
-    $line-size:200px;
-    padding: 0;
-    margin: 0;
-
-    &::after, &::before{
-      content: "";
-      position: absolute;
-      top:1rem;
-      right: -$line-size;
-      display: block;
-      width: $line-size;
-      height: 2px;
-      background-color: $secondary;
-      margin: 0 -1rem;
-    }
-    &::before{
-      right: 0;
-      left:-$line-size;
-      margin: 0 -1rem;
-    }
-  }
-}
-
-.feedback{
-  text-align: center;
-}
-
-.settings{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-}
-
-button{
-  border: none;
-  border-radius: 1rem;
-  padding: .5rem .8rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: $button;
-  color: $button-txt;
-  filter:brightness(.9);
-  &:hover{
-    transform: scale(1.05);
-    //make the all button darker (filter)
-    filter:brightness(1.1)
-  }
-  &.bigger{
-    font-size: 1.5rem;
-    padding: .2rem 1rem;
-  }
-}
-
-.flexCol{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-
-  .inline{
-    display: flex;
-    flex-direction: row;
-    justify-content: center;
-    align-items: center;
-    gap: 1rem;
-  }
-}
-
 
 </style>

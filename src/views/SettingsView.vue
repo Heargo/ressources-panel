@@ -1,5 +1,5 @@
 <template>
-  <div class="settings">
+  <div class="flexCol">
     <h1>Settings</h1>
 
     <!-- HOME BUTTON -->
@@ -15,8 +15,8 @@
       <input type="text" placeholder="Description" v-model="newFav.description">
       <!-- tags (multi selection input) -->
       <input type="text" placeholder="Tag1, tag2, etc.." v-model="newFav.tags">
-      <button @click="CreateNewFavs">Add a new fav</button>
-      <p v-if="feedback2" class="feedback">{{feedback2}}</p>
+      <ButtonComponent @click="CreateNewFavs">Add a new fav</ButtonComponent>
+      <p v-if="feedback2" class="text-center">{{feedback2}}</p>
     </section>
 
     <!-- Import json -->
@@ -25,22 +25,22 @@
       <p>Import Firefix bookmarks or custom saved in .json format.</p>
       <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
       <!-- <label for="file">Import</label> -->
-      <button v-if="fileSelected" @click="importData">Import</button>
-      <p v-if="feedback" class="feedback">{{feedback}}</p>
+      <ButtonComponent v-if="fileSelected" @click="importData">Import</ButtonComponent>
+      <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>
 
     <!-- Export json -->
     <section class="flexCol">
       <h2>Export</h2>
       <p>Export the current {{store.content.length}} saved bookmarks (include default + custom) in .json format</p>
-      <button @click="store.ExportSave">Export to json</button>
-      <p v-if="feedback" class="feedback">{{feedback}}</p>
+      <ButtonComponent @click="store.ExportSave">Export to json</ButtonComponent>
+      <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>    
 
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
-      <button @click="store.ResetContent">Reset content</button>
-      <button @click="store.ResetContent">Reset visitCount</button>
+      <ButtonComponent @click="store.ResetContent" classes="red">Reset content</ButtonComponent>
+      <ButtonComponent @click="store.ResetContent" classes="red">Reset visitCount</ButtonComponent>
     </section>
 
     <section class="flexCol">
@@ -61,6 +61,9 @@
 import { ref } from 'vue'
 import { cleanUpJSON, removeInvalid } from '@/js/convertTabsAsJson';
 import { useStore } from '@/stores/store'
+
+//components
+import ButtonComponent from '@/components/ButtonComponent.vue'
 
 const store = useStore()
 const fileSelected = ref(false)
@@ -108,125 +111,5 @@ function importData()
 </script>
 
 <style lang="scss" scoped>
-
-
-
-section{
-  margin-top: 2rem;
-  width: fit-content;
-  background-color: $background-alternative;
-  width: 80%;
-  max-width: 650px;
-  border-radius: 30px;
-  padding: 1rem;
-  input{
-    border: none;
-    border-radius: 1rem;
-    padding: .5rem .8rem;
-    font-size: 1rem;
-    outline: none;
-    border: 0;
-    background-color: $background-alternative2;
-    color: $text-color;
-  }
-
-  &.dangerZone{
-    h2{
-      color: $red;
-      font-weight: bold;
-      &::after, &::before{
-        background-color: $red;
-      }
-    }
-    button{
-      background-color: $white;
-      color: $red;
-      font-weight: bold;
-      &:hover{
-        background-color: $red;
-        color: $white;
-      }
-    }
-  }
-  
-  h2{
-    position: relative;
-    $line-size:200px;
-    padding: 0;
-    margin: 0;
-
-    &::after, &::before{
-      content: "";
-      position: absolute;
-      top:1rem;
-      right: -$line-size;
-      display: block;
-      width: $line-size;
-      height: 2px;
-      background-color: $secondary;
-      margin: 0 -1rem;
-    }
-    &::before{
-      right: 0;
-      left:-$line-size;
-      margin: 0 -1rem;
-    }
-  }
-}
-
-.feedback{
-  text-align: center;
-}
-
-.settings{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
-  padding-bottom: 1rem;
-}
-
-button{
-  border: none;
-  border-radius: 1rem;
-  padding: .5rem .8rem;
-  font-size: 1rem;
-  cursor: pointer;
-  transition: all 0.2s ease;
-  background-color: $button;
-  color: $button-txt;
-  filter:brightness(.9);
-  &:hover{
-    transform: scale(1.05);
-    //make the all button darker (filter)
-    filter:brightness(1.1)
-  }
-  &.bigger{
-    font-size: 1.5rem;
-    padding: .2rem 1rem;
-  }
-}
-
-.flexCol{
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 1rem;
-
-  ul{
-    margin: 0;
-  }
-}
-
-.justify{
-  text-align: justify;
-  a {
-    color: $tertiary;
-    text-decoration: underline;
-  }
-}
-
 
 </style>

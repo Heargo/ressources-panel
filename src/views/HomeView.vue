@@ -10,25 +10,25 @@
     </div>
 
     <!-- SEARCH BAR -->
-    <section class="searchBarContainer" ref="searchBar">
+    <div class="searchBarContainer" ref="searchBar">
       <input type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search">
       <img src="@/assets/search.svg" alt="" @click="search">
-    </section>
+    </div>
     
     <!-- MOST VISITED v-if="(infos=='' && searchQuery.length ==0 )" -->
-    <section  class="mostVisited" ref="mostVisited">
+    <div class="mostVisited" ref="mostVisited">
       <div class="favDisplayFlex col">
         <FavCardVue v-for="(res, index) in store.GetMostVisited(10)" :key="index" :result="res"></FavCardVue>
       </div>
-    </section>
+    </div>
     
     <!-- RESULTS -->
-    <section v-if="(infos!='')" class="results">
+    <div v-if="(infos!='')" class="results">
       <p v-if="(results.length==0)" class="infos">{{infos}}</p>
       <div class="favDisplayFlex">
         <ResultCardVue v-for="(res, index) in results" :key="index" :result="res.item" :score="res.score"></ResultCardVue>
       </div>
-    </section>
+    </div>
 
   </div>
 </template>
