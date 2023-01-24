@@ -8,7 +8,7 @@ export const useAuth = defineStore('auth', {
           account:null,
           accountInfo:null,
           IsConnected:JSON.parse(localStorage.getItem('isConnected')) || false,
-          LOGIN_SUCCESS:"Login successful",
+          autoSave:JSON.parse(localStorage.getItem('autoSave')) || false,
         }
       },
       actions: {
@@ -26,27 +26,33 @@ export const useAuth = defineStore('auth', {
         async CreateAccount(email,password)
         {
           const account = new Account(this.client);
-          var response;
+          let response;
+          let type;
           try{
             await account.create(ID.unique(),email,password)
-            response = "Login successful";
+            response = "The account has been created";
+            type = "success";
           }catch(error){
             response = error.message;
+            type = "error";
           }
-          return response;
+          return {value:response,type:type};
         },
         async Login(email,password)
         {
           this.account = new Account(this.client);
           var response;
+          var type;
           try{
             await this.account.createEmailSession(email,password);
-            response = this.LOGIN_SUCCESS;
+            response = "Logged in";
+            type = "success";
           }catch(error){
             response = error.message;
+            type = "error";
           }
           this.CheckConnection();
-          return response;
+          return {value:response,type:type};
         },
         async Logout() {
           try {
@@ -73,7 +79,11 @@ export const useAuth = defineStore('auth', {
           }
       },
       DeleteAccount(){
-        
+        //TODO
+      },
+      SetAutoSave(value){
+        this.autoSave = value;
+        localStorage.setItem('autoSave',value);
       }
       }
 })

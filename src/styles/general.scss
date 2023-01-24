@@ -1,0 +1,86 @@
+
+*{
+    font-family: 'Raleway', sans-serif;
+}
+
+.topRightIcon{
+    position: fixed;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    gap: .5rem;
+    img,svg{
+        width: 35px;
+        height: 35px;
+        border :solid 2px transparent;
+    }
+    img,svg,a{
+        transition: all 0.3s ease-in-out;
+        cursor: pointer;
+    }
+}
+
+
+
+section{
+    margin: 0;
+    margin-top: 2rem;
+    width: fit-content;
+    background-color: $background-alternative;
+    width: 80%;
+    max-width: 650px;
+    border-radius: 30px;
+    padding: 1rem;
+    input{
+      border: none;
+      border-radius: 1rem;
+      padding: .5rem .8rem;
+      font-size: 1rem;
+      outline: none;
+      border: 0;
+      background-color: $background-alternative2;
+      color: $text-color;
+    }
+  
+    &.dangerZone{
+      h2{
+        color: $red;
+        font-weight: bold;
+        &::after, &::before{
+          background-color: $red;
+        }
+      }
+    }
+    
+    h2{
+      position: relative;
+      $line-size:200px;
+      padding: 0;
+      margin: 0;
+  
+      &::after, &::before{
+        content: "";
+        position: absolute;
+        top:1rem;
+        right: -$line-size;
+        display: block;
+        width: $line-size;
+        height: 2px;
+        background-color: $secondary;
+        margin: 0 -1rem;
+      }
+      &::before{
+        right: 0;
+        left:-$line-size;
+        margin: 0 -1rem;
+      }
+    }
+  }
+  
+a {
+    color: $highlight;
+    text-decoration: underline;
+}

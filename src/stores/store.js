@@ -12,6 +12,9 @@ export const useStore = defineStore('main', {
           //load from local storage
           content: null,
           editMode: false,
+          toast: null,
+          lastCloudSync: localStorage.getItem('lastCloudSave') || null,
+          lastLocalSave: localStorage.getItem('lastLocalSave') || null,
           searchOptions:{
             shouldSort: true,
             threshold: 0.2,
@@ -28,15 +31,19 @@ export const useStore = defineStore('main', {
         toggleEditMode()
         {
           this.editMode = !this.editMode;
+          this.toast.Show("Edit mode "+(this.editMode ? "enabled" : "disabled"),"warning")
         },
         SetContent(newContent)
         {
           console.log("setting content to ",newContent) 
           this.content = newContent;
           localStorage.setItem('content', JSON.stringify(newContent));
+          this.lastLocalSave = new Date();
+          localStorage.setItem('lastLocalSave', this.lastLocalSave);
         },
         async LoadContent(client)
         {
+          var message;
           //get content from appwrite
           try{
 
@@ -51,29 +58,32 @@ export const useStore = defineStore('main', {
             let response = await fetch(result,{credentials:"include"});
             let json = await response.json();
             this.SetContent(json)
+            
+            this.lastCloudSync = new Date();
+            localStorage.setItem('lastCloudSync', this.lastCloudSync);
+            message = "Content loaded from server"
 
           }
           //if not possible get localstorage instead
           catch(error){
-            //throw error
-            console.error(error)
-            console.log("Error while fetching files from server, using local storage instead")
             if(localStorage.getItem('content') == null)
             {
               this.SetContent(jsonContent)
+              message = "Welcome ! Content loaded from default content"
             }else{
               this.SetContent(JSON.parse(localStorage.getItem('content')))
+              message = "Content loaded from local storage"
             }
+            
           }
-          console.log("Content loaded")
+          this.toast.Show(message,"success")
         },
         async SaveContent(userID,client)
         {
-          console.log("Saving content")
           var response;
+          var type;
           try{
             let files = await this.ListFiles(client);
-            console.log("files",files)
             if(files.length == 0)
             {
               this.UploadToCloud(userID,client,ID.unique())
@@ -81,21 +91,17 @@ export const useStore = defineStore('main', {
             }
             else
             {
-              console.log("updating file "+files[0].$id)
               await this.DeleteCloudContent(client,files[0].$id)
               await this.UploadToCloud(userID,client,ID.unique())
-              console.log("updated done")
-              response = "Content saved"
+              response = "Content syncronized";
             }
-            //update file 
-            //await this.UpdateFile(client,id)
+            type = "success"
           }
           catch(error){
             response = error.message;
-            console.log(error)
+            type = "error"
           }
-          console.log(response)
-          return response;
+          return {value:response,type:type};
         },
         async UpdateFile(client,id)
         {
@@ -122,6 +128,7 @@ export const useStore = defineStore('main', {
           catch(error){
             response = error.message;
             console.log(error)
+            this.toast.Show(response,"error")
           }
           return response;
         },
@@ -169,8 +176,10 @@ export const useStore = defineStore('main', {
         {
           let {name, url, description, tags} = data;
           if (name == null || url == null || description == null || tags == null
-              || name == "" || url == "" || description == "" || tags == "") {
-            return "Please fill all fields";
+              || name == "" || url == "" || description == "" || tags == "")
+          {
+            this.toast.Show("Please fill all fields","warning")
+            return;
           }
 
           let bookmark = {
@@ -188,14 +197,18 @@ export const useStore = defineStore('main', {
           console.log(bookmark)
           let b = this.RemoveDuplicates([bookmark]);
           let feedback = "Bookmark added";
+          let importance = "success"
           if(b.bookmarks.length != 0)
           {
             this.content.push(b.bookmarks[0]);
             this.SetContent(this.content)
           }
-          else
+          else{
             feedback = "Bookmark already exists";
-          return feedback;
+            importance="error"
+          }
+          
+          this.toast.Show(feedback,importance)
         },
         DeleteBookmark(id)
         {
@@ -232,6 +245,7 @@ export const useStore = defineStore('main', {
         AddListOfBookmarks(bookmarks)
         {
           let feedback; 
+          let importance;
           try{
 
             //remove duplicates from bookmarks
@@ -240,13 +254,15 @@ export const useStore = defineStore('main', {
             this.content = this.content.concat(bookmarks);
             this.SetContent(this.content)
             feedback = "Success to import "+bookmarks.length +" bookmarks. "+data.feedback;
+            importance = "success"
           }
           catch(e)
           {
             feedback = "Failed to import "+bookmarks.length +" bookmarks";
+            importance = "error"
           }
 
-          return feedback
+          this.toast.Show(feedback,importance)
         },
         RemoveDuplicates(bookmark)
         {
@@ -265,10 +281,12 @@ export const useStore = defineStore('main', {
         ResetContent()
         {
           this.SetContent(jsonContent)
+          this.toast.Show("Bookmarks reset","success")
         },
         ImportSave(json)
         {
           let feedback = "Success to import bookmarks";
+          let importance = "success"
           //if json is valid
           if(this.IsValidJson(json))
           {
@@ -276,22 +294,29 @@ export const useStore = defineStore('main', {
             this.SetContent(this.content)
           }else{
             feedback = "Failed to import bookmarks";
+            importance = "error"
           }
-          return feedback;
+          this.toast.Show(feedback,importance)
         },
         ExportSave()
         {
           //download json file
-          console.log(this.content)
-          let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.content));
-          console.log(dataStr)
-          var link = document.createElement("a");
+          try{
 
-          link.setAttribute("href", dataStr);
-          link.setAttribute("download", "bookmarks.json");
-          link.click();
-
-          link.remove();
+            let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.content));
+            console.log(dataStr)
+            var link = document.createElement("a");
+            
+            link.setAttribute("href", dataStr);
+            link.setAttribute("download", "bookmarks.json");
+            link.click();
+            link.remove();
+            this.toast.Show("Bookmarks exported","success")
+          }
+          catch(e)
+          {
+            this.toast.Show("Failed to export bookmarks","error")
+          }
           
         },
         IsValidJson(json)
@@ -302,15 +327,30 @@ export const useStore = defineStore('main', {
           for(let i = 0; i < json.length; i++)
           {
             let b = json[i];
-            console.log("is it valid bookmark?",b)
             if(!IsValidBookmark(b))
             {
-              console.log("invalid bookmark",b)
               isValid = false;
               break;
             }
           }
           return isValid;
+        },
+        ResetVisitCount()
+        {
+          for(let i = 0; i < this.content.length; i++)
+          {
+            this.content[i].visitCount = 0;
+          }
+          this.SetContent(this.content)
+          this.toast.Show("Visit count reset","success")
+        },
+        UnsavedChanges()
+        {
+          //compare lastCloudSync with LastLocalSave
+          if (this.lastCloudSync == null) return false;
+          //I'm using 2 seconds as a threshold to avoid saving if it's only a few milliseconds difference
+          let diff = Math.abs(this.lastCloudSync.getTime() - this.lastLocalSave.getTime());
+          return diff > 2000;
         }
 
       }

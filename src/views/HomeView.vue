@@ -1,34 +1,34 @@
 <template>
-  <div class="home">
+  <div class="home flexCol">
     <div class="topRightIcon">
       <svg @click="store.toggleEditMode()"
         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-3 -3 30 30" stroke-width="1.5" stroke="black" :class="{'scale':true,'active':store.editMode}">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
       </svg>
-      <img :src="require(`@/assets/cloud${auth.IsConnected ? '' : '-offline'}-outline.svg`)" @click="$router.push('/profile')">
+      <img :src="require(`@/assets/cloud${auth.IsConnected ? auth.autoSave ? '-autosave' : '' : '-offline'}-outline.svg`)" @click="$router.push('/profile')">
       <img src="@/assets/settings.svg" @click="$router.push('/settings')" class="rotate">
     </div>
 
     <!-- SEARCH BAR -->
-    <section class="searchBarContainer" ref="searchBar">
+    <div class="searchBarContainer" ref="searchBar">
       <input type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search">
       <img src="@/assets/search.svg" alt="" @click="search">
-    </section>
+    </div>
     
     <!-- MOST VISITED v-if="(infos=='' && searchQuery.length ==0 )" -->
-    <section  class="mostVisited" ref="mostVisited">
+    <div class="mostVisited" ref="mostVisited">
       <div class="favDisplayFlex col">
         <FavCardVue v-for="(res, index) in store.GetMostVisited(10)" :key="index" :result="res"></FavCardVue>
       </div>
-    </section>
+    </div>
     
     <!-- RESULTS -->
-    <section v-if="(infos!='')" class="results">
+    <div v-if="(infos!='')" class="results">
       <p v-if="(results.length==0)" class="infos">{{infos}}</p>
       <div class="favDisplayFlex">
         <ResultCardVue v-for="(res, index) in results" :key="index" :result="res.item" :score="res.score"></ResultCardVue>
       </div>
-    </section>
+    </div>
 
   </div>
 </template>
@@ -41,18 +41,13 @@ import FavCardVue from '@/components/FavCard.vue'
 import { useAuth } from '@/stores/auth'
 
 const auth = useAuth()
-auth.CheckConnection()
-// import { cleanUpJSON } from '@/js/convertTabsAsJson'
-// import json from '@/js/tools.json'
-
-// let c = cleanUpJSON(json)
-// console.log(c)
-
 const store = useStore()
+
+auth.CheckConnection()
+
 var searchQuery = ref('')
 var results = ref([])
 var infos = ref("")
-
 var mostVisited = ref(null)
 var searchBar = ref(null)
 
@@ -64,7 +59,7 @@ function emptySearch()
   searchBar.value.classList.remove('activeSearch')
   mostVisited.value.classList.remove('activeSearch')
 }
-//eslint-disable-next-line
+
 function search()
 {
   if(searchQuery.value.length==0 || searchQuery.value==undefined)
@@ -73,8 +68,7 @@ function search()
     return
   }
 
-  //wait .3s before searching
-  console.log("searching", searchQuery.value)
+  //wait .3s before searching for animation to finish
   searchBar.value.classList.add('activeSearch')
   mostVisited.value.classList.add('activeSearch')
   setTimeout(() => {
@@ -112,16 +106,9 @@ function search()
       border:solid 2px $white;
       stroke: $white;
   }
-
-  
 }
 
 .home{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
   width: 100%;
   height: 100%;
   min-height: 90vh;
