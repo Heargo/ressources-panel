@@ -1,5 +1,5 @@
 <template>
-  <div class="home">
+  <div class="home flexCol">
     <div class="topRightIcon">
       <svg @click="store.toggleEditMode()"
         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-3 -3 30 30" stroke-width="1.5" stroke="black" :class="{'scale':true,'active':store.editMode}">
@@ -41,18 +41,13 @@ import FavCardVue from '@/components/FavCard.vue'
 import { useAuth } from '@/stores/auth'
 
 const auth = useAuth()
-auth.CheckConnection()
-// import { cleanUpJSON } from '@/js/convertTabsAsJson'
-// import json from '@/js/tools.json'
-
-// let c = cleanUpJSON(json)
-// console.log(c)
-
 const store = useStore()
+
+auth.CheckConnection()
+
 var searchQuery = ref('')
 var results = ref([])
 var infos = ref("")
-
 var mostVisited = ref(null)
 var searchBar = ref(null)
 
@@ -64,7 +59,7 @@ function emptySearch()
   searchBar.value.classList.remove('activeSearch')
   mostVisited.value.classList.remove('activeSearch')
 }
-//eslint-disable-next-line
+
 function search()
 {
   if(searchQuery.value.length==0 || searchQuery.value==undefined)
@@ -73,8 +68,7 @@ function search()
     return
   }
 
-  //wait .3s before searching
-  console.log("searching", searchQuery.value)
+  //wait .3s before searching for animation to finish
   searchBar.value.classList.add('activeSearch')
   mostVisited.value.classList.add('activeSearch')
   setTimeout(() => {
@@ -112,16 +106,9 @@ function search()
       border:solid 2px $white;
       stroke: $white;
   }
-
-  
 }
 
 .home{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 1rem;
   width: 100%;
   height: 100%;
   min-height: 90vh;
