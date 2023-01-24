@@ -311,6 +311,14 @@ export const useStore = defineStore('main', {
             }
           }
           return isValid;
+        },
+        ResetVisitCount()
+        {
+          for(let i = 0; i < this.content.length; i++)
+          {
+            this.content[i].visitCount = 0;
+          }
+          this.SetContent(this.content)
         }
 
       }

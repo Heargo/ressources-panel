@@ -40,7 +40,7 @@
     <section class="flexCol dangerZone">
       <h2>Danger Zone</h2>
       <ButtonComponent @click="store.ResetContent" classes="red">Reset content</ButtonComponent>
-      <ButtonComponent @click="store.ResetContent" classes="red">Reset visitCount</ButtonComponent>
+      <ButtonComponent @click="store.ResetVisitCount" classes="red">Reset visitCount</ButtonComponent>
     </section>
 
     <section class="flexCol">
