@@ -8,6 +8,7 @@ export const useAuth = defineStore('auth', {
           account:null,
           accountInfo:null,
           IsConnected:JSON.parse(localStorage.getItem('isConnected')) || false,
+          autoSave:JSON.parse(localStorage.getItem('autoSave')) || false,
           LOGIN_SUCCESS:"Login successful",
         }
       },
@@ -73,7 +74,11 @@ export const useAuth = defineStore('auth', {
           }
       },
       DeleteAccount(){
-        
+        //TODO
+      },
+      SetAutoSave(value){
+        this.autoSave = value;
+        localStorage.setItem('autoSave',value);
       }
       }
 })

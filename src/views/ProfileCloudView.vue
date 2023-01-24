@@ -33,8 +33,15 @@
     <section class="flexCol" v-show="auth.IsConnected">
       <h2>Account</h2>
       <p>You have {{ store.content.length }} favorites saved</p>
-      <ButtonComponent @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</ButtonComponent>
-      
+      <div class="inline">
+        <p>Auto save</p>
+        <CheckboxComponent @change="handleAutoSaveTrigger" :defaultValue="auth.autoSave"></CheckboxComponent>
+      </div>
+      <div class="inline">
+        <p>Or save manually</p>
+        <ButtonComponent @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</ButtonComponent>
+      </div>
+      <p>Save is blablabla</p>
     </section>
     
 
@@ -54,6 +61,7 @@ import { useStore } from '@/stores/store'
 
 //components
 import ButtonComponent from '@/components/ButtonComponent.vue'
+import CheckboxComponent from '@/components/CheckboxComponent.vue'
 
 const auth = useAuth()
 const store = useStore()
@@ -65,6 +73,11 @@ const feedback = ref(null)
 function ToggleLogin()
 {
   loginPanel.value = ! loginPanel.value
+}
+
+function handleAutoSaveTrigger(value)
+{
+  auth.SetAutoSave(value.value)
 }
 
 async function SignUp()

@@ -12,6 +12,8 @@ export const useStore = defineStore('main', {
           //load from local storage
           content: null,
           editMode: false,
+          lastCloudSync: localStorage.getItem('lastCloudSave') || null,
+          lastLocalSave: localStorage.getItem('lastLocalSave') || null,
           searchOptions:{
             shouldSort: true,
             threshold: 0.2,
@@ -34,6 +36,8 @@ export const useStore = defineStore('main', {
           console.log("setting content to ",newContent) 
           this.content = newContent;
           localStorage.setItem('content', JSON.stringify(newContent));
+          this.lastLocalSave = new Date();
+          localStorage.setItem('lastLocalSave', this.lastLocalSave);
         },
         async LoadContent(client)
         {
@@ -51,6 +55,9 @@ export const useStore = defineStore('main', {
             let response = await fetch(result,{credentials:"include"});
             let json = await response.json();
             this.SetContent(json)
+            
+            this.lastCloudSync = new Date();
+            localStorage.setItem('lastCloudSync', this.lastCloudSync);
 
           }
           //if not possible get localstorage instead
@@ -319,6 +326,14 @@ export const useStore = defineStore('main', {
             this.content[i].visitCount = 0;
           }
           this.SetContent(this.content)
+        },
+        UnsavedChanges()
+        {
+          //compare lastCloudSync with LastLocalSave
+          if (this.lastCloudSync == null) return false;
+          //check if there is more than 5 seconds difference between lastCloudSync and lastLocalSave
+          let diff = Math.abs(this.lastCloudSync.getTime() - this.lastLocalSave.getTime());
+          return diff > 5000;
         }
 
       }
