@@ -16,7 +16,6 @@
       <!-- tags (multi selection input) -->
       <input type="text" placeholder="Tag1, tag2, etc.." v-model="newFav.tags">
       <ButtonComponent @click="CreateNewFavs">Add a new fav</ButtonComponent>
-      <p v-if="feedback2" class="text-center">{{feedback2}}</p>
     </section>
 
     <!-- Import json -->
@@ -69,7 +68,6 @@ const store = useStore()
 const fileSelected = ref(false)
 const importedJson = ref(null)
 const feedback = ref("")
-const feedback2 = ref("")
 const newFav = ref({})
 
 
@@ -86,7 +84,7 @@ function selectFile(e)
 
 function CreateNewFavs()
 {
-  feedback2.value = store.AddBookmark(newFav.value)
+  store.AddBookmark(newFav.value)
 }
 
 function importData()
@@ -94,7 +92,7 @@ function importData()
   if(store.IsValidJson(importedJson.value))
   {
     console.log("custom save")
-    feedback.value = store.ImportSave(importedJson.value)
+    store.ImportSave(importedJson.value)
   }
   else{
     console.log("not a custom save")
@@ -104,7 +102,7 @@ function importData()
     {
       importedJson.value = converted
     }
-    feedback.value = store.AddListOfBookmarks(importedJson.value)
+    store.AddListOfBookmarks(importedJson.value)
   }
 }
 

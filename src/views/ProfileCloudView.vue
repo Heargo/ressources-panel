@@ -15,7 +15,6 @@
       <input type="password" placeholder="password" v-model="formValue.password"> 
       <ButtonComponent @click="Login">Login</ButtonComponent>
       <p>Don't have an account ? <span @click="ToggleLogin()" class="underline">Sign up</span></p>
-      <p v-show="feedback!=null && feedback!=''" class="text-center">{{feedback}}</p>
     </section>
 
     <!-- SIGN UP -->
@@ -26,7 +25,6 @@
       <input type="password" placeholder="password verification" v-model="formValue.passwordVerification">
       <ButtonComponent @click="SignUp">Create account</ButtonComponent>
       <p>Already have an account ? <span @click="ToggleLogin()" class="underline">Login</span></p>
-      <p v-show="feedback!=null && feedback!=''" class="text-center">{{feedback}}</p>
     </section>
 
     <!-- PROFILE -->
@@ -39,9 +37,8 @@
       </div>
       <div class="inline">
         <p>Or save manually</p>
-        <ButtonComponent @click="store.SaveContent(auth.accountInfo.$id,auth.client)">Save to cloud</ButtonComponent>
+        <ButtonComponent @click="ManualSave">Save to cloud</ButtonComponent>
       </div>
-      <p>Save is blablabla</p>
     </section>
     
 
@@ -58,21 +55,28 @@
 import { ref } from 'vue'
 import { useAuth } from '@/stores/auth'
 import { useStore } from '@/stores/store'
-
+import { useToast } from '@/stores/toast'
 //components
 import ButtonComponent from '@/components/ButtonComponent.vue'
 import CheckboxComponent from '@/components/CheckboxComponent.vue'
 
 const auth = useAuth()
 const store = useStore()
+const toast = useToast()
+
 const loginPanel = ref(true)
 const formValue =ref({})
-const feedback = ref(null)
 
 
 function ToggleLogin()
 {
   loginPanel.value = ! loginPanel.value
+}
+
+async function ManualSave()
+{
+  let feedback = await store.SaveContent(auth.accountInfo.$id,auth.client)
+  toast.Show(feedback.value,feedback.type)
 }
 
 function handleAutoSaveTrigger(value)
@@ -83,25 +87,29 @@ function handleAutoSaveTrigger(value)
 async function SignUp()
 {
   var form = formValue.value
+  let feedback = {value:'',type:''}
   //all fields are required
   if(form.email == null || form.email == "" || form.password == null || form.password == "" || form.passwordVerification == null || form.passwordVerification == "")
   {
-    feedback.value = "All fields are required"
+    toast.Show("All fields are required","warning")
     return
   }
   if(form.password != form.passwordVerification)
   {
-    feedback.value = "Passwords don't match"
+    toast.Show("Passwords don't match","warning")
     return
   }
 
-  feedback.value = await auth.CreateAccount(form.email,form.password)
+  feedback = await auth.CreateAccount(form.email,form.password)
+
+  toast.Show(feedback.value,feedback.type)
 }
 
 function Logout()
 {
   auth.Logout()
   store.ResetContent()
+  toast.Show("You have been logged out","success")
 }
 
 
@@ -111,12 +119,13 @@ async function Login()
   //all fields are required
   if(form.email == null || form.email == "" || form.password == null || form.password == "")
   {
-    feedback.value = "All fields are required"
+    toast.Show("All fields are required","warning")
     return
   }
   let response = await auth.Login(form.email,form.password)
+  toast.Show(response.value,response.type)
   //if login success, load content from cloud
-  if(response == auth.LOGIN_SUCCESS)
+  if(response.type == "success")
     store.LoadContent(auth.client)
 }
 
