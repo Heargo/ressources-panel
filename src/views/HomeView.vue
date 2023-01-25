@@ -25,7 +25,7 @@
     <!-- RESULTS -->
     <div v-if="(infos!='')" class="results">
       <p v-if="(results.length==0)" class="infos">{{infos}}</p>
-      <div class="favDisplayFlex">
+      <div class="favDisplayFlex" :key="forceCardUpdate">
         <ResultCardVue v-for="(res, index) in results" :key="index" :result="res.item" :score="res.score"></ResultCardVue>
       </div>
     </div>
@@ -50,6 +50,7 @@ var results = ref([])
 var infos = ref("")
 var mostVisited = ref(null)
 var searchBar = ref(null)
+var forceCardUpdate = ref(0)
 
 
 function emptySearch()
@@ -60,6 +61,15 @@ function emptySearch()
   mostVisited.value.classList.remove('activeSearch')
 }
 
+function searchAndUpdateUI()
+{
+  results.value = []
+  let data = store.search(searchQuery.value)
+  results.value = data.results
+  infos.value = data.infos
+  forceCardUpdate.value++
+}
+
 function search()
 {
   if(searchQuery.value.length==0 || searchQuery.value==undefined)
@@ -68,16 +78,21 @@ function search()
     return
   }
 
-  //wait .3s before searching for animation to finish
-  searchBar.value.classList.add('activeSearch')
-  mostVisited.value.classList.add('activeSearch')
-  setTimeout(() => {
-    if(searchQuery.value!=0){
-      let data = store.search(searchQuery.value)
-      results.value = data.results
-      infos.value = data.infos
-    }
-  }, 300);
+  //no need to wait for niamtion if search bar is already active
+  if(searchBar.value.classList.contains('activeSearch'))
+  {
+    searchAndUpdateUI()
+  }
+  else{
+    searchBar.value.classList.add('activeSearch')
+    mostVisited.value.classList.add('activeSearch')
+    //wait .3s before searching for animation to finish
+    setTimeout(() => {
+      if(searchQuery.value!=0){
+        searchAndUpdateUI()
+      }
+    }, 300);
+  }
 }
 </script>
 
