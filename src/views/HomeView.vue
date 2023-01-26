@@ -12,7 +12,7 @@
     <!-- SEARCH BAR -->
     <div class="searchBarContainer" ref="searchBar">
       <div class="inline" style="margin-top:0;">
-        <input type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search(null)">
+        <input class="glass" type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search(null)">
         <img src="@/assets/search.svg" alt="" @click="search(null)">
       </div>
       <div class="inline" v-show="!searching">
@@ -164,9 +164,9 @@ function search(query=null)
       font-size: 2rem;
       border-radius: 1rem;
       outline: none;
-      border: none;
+      // border: none;
       padding: 0 1rem;
-      background-color: $background-alternative;
+      // background-color: $background-alternative;
       color: $text-color;
     }
 

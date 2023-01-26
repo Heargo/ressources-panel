@@ -9,7 +9,7 @@
     </router-link>
 
     <!-- LOGIN -->
-    <section class="flexCol" v-show="loginPanel && !auth.IsConnected">
+    <section class="flexCol glass" v-show="loginPanel && !auth.IsConnected">
       <h2>Login</h2>
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password"> 
@@ -18,7 +18,7 @@
     </section>
 
     <!-- SIGN UP -->
-    <section class="flexCol" v-show="!loginPanel && !auth.IsConnected">
+    <section class="flexCol glass" v-show="!loginPanel && !auth.IsConnected">
       <h2>Sign up</h2>
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password">
@@ -28,7 +28,7 @@
     </section>
 
     <!-- PROFILE -->
-    <section class="flexCol" v-show="auth.IsConnected">
+    <section class="flexCol glass" v-show="auth.IsConnected">
       <h2>Account</h2>
       <p>You have {{ store.content.length }} favorites saved</p>
       <div class="inline">
@@ -42,7 +42,7 @@
     </section>
     
 
-    <section class="flexCol dangerZone">
+    <section class="flexCol dangerZone glass" v-show="auth.IsConnected">
       <h2>Danger Zone</h2>
       <p>Work in progress...</p>
       <ButtonComponent @click="Logout" classes="red">Logout</ButtonComponent>
