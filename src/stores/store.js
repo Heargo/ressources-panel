@@ -283,6 +283,10 @@ export const useStore = defineStore('main', {
           this.SetContent(jsonContent)
           this.toast.Show("Bookmarks reset","success")
         },
+        GetDefaultContent()
+        {
+          return jsonContent;
+        },
         ImportSave(json)
         {
           let feedback = "Success to import bookmarks";
