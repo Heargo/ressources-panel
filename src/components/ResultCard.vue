@@ -1,5 +1,5 @@
 <template>
-    <div class="resultCard" @click="openLink">
+    <div class="resultCard glass variant" @click="openLink">
         <div class="basicInfo">
             <img :src="('https://www.google.com/s2/favicons?domain='+fav.url+'&sz=64')" alt="no image :/">
             <p v-if="!store.editMode">{{fav.name}}</p>

@@ -1,5 +1,5 @@
 <template>
-    <div class="favCard" @click="openLink">
+    <div class="favCard glass variant" @click="openLink">
         <img :src="('https://www.google.com/s2/favicons?domain='+result.url+'&sz=64')" alt="no image :/">
         <p class="name">{{result.name}}</p>
     </div>
@@ -32,9 +32,13 @@ function openLink()
     width: $card-size;
     height: $card-size;
     background-color: $secondary;
-    border-radius: 20%;
+    
     padding: .2rem;
     cursor: pointer;
+
+    &.glass{
+        border-radius: 20%;
+    }
 
     img{
         width: 100%;

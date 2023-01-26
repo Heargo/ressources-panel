@@ -11,8 +11,18 @@
 
     <!-- SEARCH BAR -->
     <div class="searchBarContainer" ref="searchBar">
-      <input type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search">
-      <img src="@/assets/search.svg" alt="" @click="search">
+      <div class="inline" style="margin-top:0;">
+        <input class="glass" type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search(null)">
+        <img src="@/assets/search.svg" alt="" @click="search(null)">
+      </div>
+      <div class="inline" v-show="!searching">
+        <button class="glass hoverable" @click="search('Visual')">Visual</button>
+        <button class="glass hoverable" @click="search('Code')">Code</button>
+        <button class="glass hoverable" @click="search('Reference')">Reference</button>
+      </div>
+      <div class="inline" v-show="!searching">
+        <p class="text-center">You can search into name, description, and tag of the {{ store.GetDefaultContent().length }} bookmarks or use the quick search.</p>
+      </div>
     </div>
     
     <!-- MOST VISITED v-if="(infos=='' && searchQuery.length ==0 )" -->
@@ -51,6 +61,7 @@ var infos = ref("")
 var mostVisited = ref(null)
 var searchBar = ref(null)
 var forceCardUpdate = ref(0)
+var searching = ref(false)
 
 
 function emptySearch()
@@ -59,29 +70,39 @@ function emptySearch()
   infos.value = ""
   searchBar.value.classList.remove('activeSearch')
   mostVisited.value.classList.remove('activeSearch')
+  //wait .3s before searching for animation to finish
+  setTimeout(() => {
+    searching.value = false
+  }, 300);
 }
 
-function searchAndUpdateUI()
+function searchAndUpdateUI(query)
 {
   results.value = []
-  let data = store.search(searchQuery.value)
+  let data = store.search(query)
   results.value = data.results
   infos.value = data.infos
   forceCardUpdate.value++
 }
 
-function search()
+function search(query=null)
 {
-  if(searchQuery.value.length==0 || searchQuery.value==undefined)
+  let q = query==null ? searchQuery.value : query
+  if(query!=null)
+    searchQuery.value = query
+
+  if(q.length==0 || q==undefined)
   {
     emptySearch()
     return
   }
 
-  //no need to wait for niamtion if search bar is already active
+  searching.value = true
+
+  //no need to wait for animation if search bar is already active
   if(searchBar.value.classList.contains('activeSearch'))
   {
-    searchAndUpdateUI()
+    searchAndUpdateUI(q)
   }
   else{
     searchBar.value.classList.add('activeSearch')
@@ -89,7 +110,7 @@ function search()
     //wait .3s before searching for animation to finish
     setTimeout(() => {
       if(searchQuery.value!=0){
-        searchAndUpdateUI()
+        searchAndUpdateUI(q)
       }
     }, 300);
   }
@@ -143,17 +164,15 @@ function search()
       font-size: 2rem;
       border-radius: 1rem;
       outline: none;
-      border: none;
+      // border: none;
       padding: 0 1rem;
-      background-color: $background-alternative;
+      // background-color: $background-alternative;
       color: $text-color;
     }
 
     img{
       position: absolute;
-      top: 50%;
       right: 1rem;
-      transform: translate(0, -50%);
       width: 30px;
       height: 30px;
       cursor: pointer;
@@ -165,6 +184,28 @@ function search()
       top:0;
       left:0;
       transform: scale(0.5) translate(-45%, 0%);
+    }
+
+    .inline{
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-top: 1rem;
+
+      button{
+        width: 100%;
+        height: 50px;
+        outline: none;
+        color: $text-color;
+        font-size: 1.5rem;
+        cursor: pointer;        
+      }
+      p{
+        width: 100%;
+        margin:0;
+        font-style: italic;
+        font-size: 1rem;
+      }
     }
   }
 
@@ -205,5 +246,9 @@ function search()
     padding-bottom: 1rem;
   }
 
+}
+
+.help{
+  margin:0;
 }
 </style>
