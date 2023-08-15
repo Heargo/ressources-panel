@@ -14,17 +14,6 @@
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password"> 
       <ButtonComponent @click="Login">Login</ButtonComponent>
-      <p>Don't have an account ? <span @click="ToggleLogin()" class="underline">Sign up</span></p>
-    </section>
-
-    <!-- SIGN UP -->
-    <section class="flexCol glass" v-show="!loginPanel && !auth.IsConnected">
-      <h2>Sign up</h2>
-      <input type="email" placeholder="email" v-model="formValue.email">
-      <input type="password" placeholder="password" v-model="formValue.password">
-      <input type="password" placeholder="password verification" v-model="formValue.passwordVerification">
-      <ButtonComponent @click="SignUp">Create account</ButtonComponent>
-      <p>Already have an account ? <span @click="ToggleLogin()" class="underline">Login</span></p>
     </section>
 
     <!-- PROFILE -->
@@ -46,7 +35,6 @@
       <h2>Danger Zone</h2>
       <p>Work in progress...</p>
       <ButtonComponent @click="Logout" classes="red">Logout</ButtonComponent>
-      <!-- <button @click="auth.DeleteAccount">Delete account</button> -->
     </section>
   </div>
 </template>
@@ -68,11 +56,6 @@ const loginPanel = ref(true)
 const formValue =ref({})
 
 
-function ToggleLogin()
-{
-  loginPanel.value = ! loginPanel.value
-}
-
 async function ManualSave()
 {
   let feedback = await store.SaveContent(auth.accountInfo.$id,auth.client)
@@ -84,26 +67,6 @@ function handleAutoSaveTrigger(value)
   auth.SetAutoSave(value.value)
 }
 
-async function SignUp()
-{
-  var form = formValue.value
-  let feedback = {value:'',type:''}
-  //all fields are required
-  if(form.email == null || form.email == "" || form.password == null || form.password == "" || form.passwordVerification == null || form.passwordVerification == "")
-  {
-    toast.Show("All fields are required","warning")
-    return
-  }
-  if(form.password != form.passwordVerification)
-  {
-    toast.Show("Passwords don't match","warning")
-    return
-  }
-
-  feedback = await auth.CreateAccount(form.email,form.password)
-
-  toast.Show(feedback.value,feedback.type)
-}
 
 function Logout()
 {

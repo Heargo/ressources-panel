@@ -234,6 +234,7 @@ function search(query=null)
     position: fixed;
     top: 1rem;
     left: 1rem;
+    z-index: 10;
     height: calc(100% - 1rem);
     transition: all 0.3s ease-in-out;
     &.activeSearch{

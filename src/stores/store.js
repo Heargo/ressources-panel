@@ -11,8 +11,10 @@ export const useStore = defineStore('main', {
         return {
           //load from local storage
           content: null,
+          history:{}, //key is the id of the bookmark, value is {visitCount:0,lastVisitTime:date}
           editMode: false,
           toast: null,
+          bucketID: 'favorites',
           lastCloudSync: localStorage.getItem('lastCloudSave') || null,
           lastLocalSave: localStorage.getItem('lastLocalSave') || null,
           searchOptions:{
@@ -35,28 +37,30 @@ export const useStore = defineStore('main', {
         },
         SetContent(newContent)
         {
-          console.log("setting content to ",newContent) 
+          console.log("loading ",newContent) 
           this.content = newContent;
           localStorage.setItem('content', JSON.stringify(newContent));
           this.lastLocalSave = new Date();
           localStorage.setItem('lastLocalSave', this.lastLocalSave);
+          //load history from local storage
+          this.history = JSON.parse(localStorage.getItem('history')) || {};
         },
         async LoadContent(client)
         {
           var message;
-          //get content from appwrite
+          //get latest content from appwrite
           try{
-
             let files = await this.ListFiles(client);
             let file = files[0]
             let storage = new Storage(client);
 
             //get file url
-            const result = storage.getFileView('63cdc26fcca5b0af2dbd', file.$id);
+            const result = storage.getFileView(this.bucketID, file.$id);
 
             //get the content of the file
             let response = await fetch(result,{credentials:"include"});
-            let json = await response.json();
+            let json = await response.json();            
+            
             this.SetContent(json)
             
             this.lastCloudSync = new Date();
@@ -107,7 +111,7 @@ export const useStore = defineStore('main', {
         {
           console.log("Updating content")
           let storage = new Storage(client);
-          await storage.updateFile('63cdc26fcca5b0af2dbd', id);
+          await storage.updateFile(this.bucketID, id);
         },
         async UploadToCloud(userID,client,id)
         {
@@ -118,7 +122,7 @@ export const useStore = defineStore('main', {
           const storage = new Storage(client);
           var response;
           try{
-            await storage.createFile('63cdc26fcca5b0af2dbd', id, file,[
+            await storage.createFile(this.bucketID, id, file,[
               Permission.delete(Role.user(userID)),
               Permission.read(Role.user(userID)),
               Permission.update(Role.user(userID))
@@ -142,7 +146,7 @@ export const useStore = defineStore('main', {
             let files = await this.ListFiles(client);
             console.log("files",files)
             console.log("deleting file "+files[0].$id)
-            await storage.deleteFile('63cdc26fcca5b0af2dbd', files[0].$id);
+            await storage.deleteFile(this.bucketID, files[0].$id);
             response = true;    
           }
           catch(error){
@@ -156,7 +160,7 @@ export const useStore = defineStore('main', {
           const storage = new Storage(client);
           var response;
           try{
-            response = await storage.listFiles('63cdc26fcca5b0af2dbd');
+            response = await storage.listFiles(this.bucketID);
             response = response.files;
           }
           catch(error){
@@ -226,20 +230,40 @@ export const useStore = defineStore('main', {
         },
         IncrementVisitCount(id)
         {
-          let index = this.content.findIndex(x => x.id == id);
-          //visit count
-          this.content[index].visitCount++;
-
-          //last visit
-          this.content[index].lastVisitTime = Date.now();
-          this.SetContent(this.content)
+          if(this.history[id] == null)
+          {
+            this.history[id] = {
+              visitCount:1,
+              lastVisitTime:Date.now()
+            };
+          }
+          else{
+            this.history[id].visitCount++;
+            this.history[id].lastVisitTime = Date.now();
+          }
+          //save to local storage
+          localStorage.setItem('history', JSON.stringify(this.history));
         },
         GetMostVisited(n)
         {
           if(this.content ==null) return [];
-          let mostVisited = this.content.sort((a,b) => b.visitCount - a.visitCount).slice(0,n);
+
+          //sort by visit count
+          let mostVisited = this.content.sort((a,b) => {
+            let aVisitCount = this.history[a.id] == null ? 0 : this.history[a.id].visitCount;
+            let bVisitCount = this.history[b.id] == null ? 0 : this.history[b.id].visitCount;
+            return bVisitCount - aVisitCount;
+          }
+          
+          ).slice(0,n);
+
           //get first n on most visited where visit count > 0
-          mostVisited = mostVisited.filter(x => x.visitCount > 0);
+          mostVisited = mostVisited.filter(x => {
+            let visitCount = this.history[x.id] == null ? 0 : this.history[x.id].visitCount;
+            return visitCount > 0;
+          });
+
+
           return mostVisited;
         },
         AddListOfBookmarks(bookmarks)
@@ -341,20 +365,17 @@ export const useStore = defineStore('main', {
         },
         ResetVisitCount()
         {
-          for(let i = 0; i < this.content.length; i++)
-          {
-            this.content[i].visitCount = 0;
-          }
-          this.SetContent(this.content)
+          this.history = {};
+          localStorage.setItem('history', JSON.stringify(this.history));
           this.toast.Show("Visit count reset","success")
         },
         UnsavedChanges()
         {
           //compare lastCloudSync with LastLocalSave
           if (this.lastCloudSync == null) return false;
-          //I'm using 2 seconds as a threshold to avoid saving if it's only a few milliseconds difference
+          //I'm using 5 seconds as a threshold to avoid saving if it's only a few milliseconds difference
           let diff = Math.abs(this.lastCloudSync.getTime() - this.lastLocalSave.getTime());
-          return diff > 2000;
+          return diff > 5000;
         }
 
       }
