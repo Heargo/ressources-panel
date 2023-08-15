@@ -8,7 +8,7 @@
     </router-link>
 
     <!-- Create New favs -->
-    <section class="flexCol glass">
+    <section class="flexCol glass" v-if="auth.IsConnected">
       <h2>Create a fav</h2>
       <input type="text" placeholder="Name" v-model="newFav.name">
       <input type="text" placeholder="Url" v-model="newFav.url">
@@ -19,7 +19,7 @@
     </section>
 
     <!-- Import json -->
-    <section class="flexCol glass">
+    <section class="flexCol glass" v-if="auth.IsConnected">
       <h2>Import</h2>
       <p>Import Firefix bookmarks or custom saved in .json format.</p>
       <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
@@ -38,7 +38,7 @@
 
     <section class="flexCol dangerZone glass">
       <h2>Danger Zone</h2>
-      <ButtonComponent @click="store.ResetContent" classes="red">Reset content</ButtonComponent>
+      <!-- <ButtonComponent @click="store.ResetContent" classes="red">Reset content</ButtonComponent> -->
       <ButtonComponent @click="store.ResetVisitCount" classes="red">Reset visitCount</ButtonComponent>
     </section>
 
@@ -47,8 +47,8 @@
       <p class="justify">This website is using cookies and localstorage to :
       <br><br>
       <ul>
-        <li>store information for cloud syncronisation (if an account is created by an user)</li>
-        <li>store locally custom changes to the default set of bookmark made by the user.</li>
+        <li>store information for cloud syncronisation</li>
+        <li>store locally history of the user (visitCount and last time visited)</li>
       </ul>
       <br>
       The backend of this application is powered by <a href="https://appwrite.io/">Appwrite</a>. All password are encrypted.</p>
@@ -60,6 +60,7 @@
 import { ref } from 'vue'
 import { cleanUpJSON, removeInvalid } from '@/js/convertTabsAsJson';
 import { useStore } from '@/stores/store'
+import { useAuth } from '@/stores/auth'
 
 //components
 import ButtonComponent from '@/components/ButtonComponent.vue'
@@ -69,6 +70,7 @@ const fileSelected = ref(false)
 const importedJson = ref(null)
 const feedback = ref("")
 const newFav = ref({})
+const auth = useAuth()
 
 
 function selectFile(e)
