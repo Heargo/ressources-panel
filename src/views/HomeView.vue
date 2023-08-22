@@ -21,7 +21,7 @@
         <button class="glass hoverable" @click="search('Reference')">Reference</button>
       </div>
       <div class="inline" v-show="!searching">
-        <p class="text-center">You can search into name, description, and tag of the {{ store.GetDefaultContent().length }} bookmarks or use the quick search.</p>
+        <p class="text-center">You can search into name, description, and tag of the {{ store.content.length }} bookmarks or use the quick search.</p>
       </div>
     </div>
     
