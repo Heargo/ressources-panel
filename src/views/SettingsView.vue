@@ -1,5 +1,5 @@
 <template>
-  <div class="flexCol">
+  <div class="flex-col">
     <h1>Settings</h1>
 
     <!-- HOME BUTTON -->
@@ -8,7 +8,7 @@
     </router-link>
 
     <!-- Create New favs -->
-    <section class="flexCol glass" v-if="auth.IsConnected">
+    <section class="flex-col glass" v-if="auth.IsConnected">
       <h2>Create a fav</h2>
       <input type="text" placeholder="Name" v-model="newFav.name">
       <input type="text" placeholder="Url" v-model="newFav.url">
@@ -19,7 +19,7 @@
     </section>
 
     <!-- Import json -->
-    <section class="flexCol glass" v-if="auth.IsConnected">
+    <section class="flex-col glass" v-if="auth.IsConnected">
       <h2>Import</h2>
       <p>Import Firefix bookmarks or custom saved in .json format.</p>
       <input type="file" id="file" ref="file" @change="selectFile" accept=".json">
@@ -29,20 +29,20 @@
     </section>
 
     <!-- Export json -->
-    <section class="flexCol glass">
+    <section class="flex-col glass">
       <h2>Export</h2>
       <p>Export the current {{store.content.length}} saved bookmarks (include default + custom) in .json format</p>
       <ButtonComponent @click="store.ExportSave">Export to json</ButtonComponent>
       <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>    
 
-    <section class="flexCol dangerZone glass">
+    <section class="flex-col dangerZone glass">
       <h2>Danger Zone</h2>
       <!-- <ButtonComponent @click="store.ResetContent" classes="red">Reset content</ButtonComponent> -->
       <ButtonComponent @click="store.ResetVisitCount" classes="red">Reset visitCount</ButtonComponent>
     </section>
 
-    <section class="flexCol glass" style="margin-bottom: 1rem;">
+    <section class="flex-col glass" style="margin-bottom: 1rem;">
       <h2>About</h2>
       <p class="justify">This website is using cookies and localstorage to :
       <br><br>

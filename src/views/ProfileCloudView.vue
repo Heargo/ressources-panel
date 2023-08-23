@@ -1,5 +1,5 @@
 <template>
-  <div class="flexCol">
+  <div class="flex-col">
     <h1 v-if="auth.accountInfo">Welcome {{ auth.accountInfo.email }} !</h1>
     <h1 v-else>Sync to cloud</h1>
 
@@ -9,7 +9,7 @@
     </router-link>
 
     <!-- LOGIN -->
-    <section class="flexCol glass" v-show="loginPanel && !auth.IsConnected">
+    <section class="flex-col glass" v-show="loginPanel && !auth.IsConnected">
       <h2>Login</h2>
       <input type="email" placeholder="email" v-model="formValue.email">
       <input type="password" placeholder="password" v-model="formValue.password"> 
@@ -17,21 +17,21 @@
     </section>
 
     <!-- PROFILE -->
-    <section class="flexCol glass" v-show="auth.IsConnected">
+    <section class="flex-col glass" v-show="auth.IsConnected">
       <h2>Account</h2>
       <p>You have {{ store.content.length }} favorites saved</p>
-      <div class="inline">
+      <div class="flex-row">
         <p>Auto save</p>
         <CheckboxComponent @change="handleAutoSaveTrigger" :defaultValue="auth.autoSave"></CheckboxComponent>
       </div>
-      <div class="inline">
+      <div class="flex-row">
         <p>Or save manually</p>
         <ButtonComponent @click="ManualSave">Save to cloud</ButtonComponent>
       </div>
     </section>
     
 
-    <section class="flexCol dangerZone glass" v-show="auth.IsConnected">
+    <section class="flex-col dangerZone glass" v-show="auth.IsConnected">
       <h2>Danger Zone</h2>
       <p>Work in progress...</p>
       <ButtonComponent @click="Logout" classes="red">Logout</ButtonComponent>

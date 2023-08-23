@@ -1,5 +1,5 @@
 <template>
-  <div class="home flexCol">
+  <div class="home flex-col">
     <div class="topRightIcon">
       <svg @click="store.toggleEditMode()" v-if="auth.IsConnected"
         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-3 -3 30 30" stroke-width="1.5" stroke="black" :class="{'scale':true,'active':store.editMode}">
@@ -11,16 +11,16 @@
 
     <!-- SEARCH BAR -->
     <div class="searchBarContainer" ref="searchBar">
-      <div class="inline" style="margin-top:0;">
+      <div class="flex-row" style="margin-top:0;">
         <input class="glass" type="text" name="search" v-model="searchQuery" placeholder="Search" @keypress.enter="search(null)">
         <img src="@/assets/search.svg" alt="" @click="search(null)">
       </div>
-      <div class="inline" v-show="!searching">
+      <div class="flex-row" v-show="!searching">
         <button class="glass hoverable" @click="search('Visual')">Visual</button>
         <button class="glass hoverable" @click="search('Code')">Code</button>
         <button class="glass hoverable" @click="search('Reference')">Reference</button>
       </div>
-      <div class="inline" v-show="!searching">
+      <div class="flex-row" v-show="!searching">
         <p class="text-center">You can search into name, description, and tag of the {{ store.content.length }} bookmarks or use the quick search.</p>
       </div>
     </div>
@@ -198,9 +198,7 @@ function search(query=null)
       transform: scale(0.5) translate(-45%, 0%);
     }
 
-    .inline{
-      display: flex;
-      flex-direction: row;
+    .flex-row{
       justify-content: space-between;
       margin-top: 1rem;
 
