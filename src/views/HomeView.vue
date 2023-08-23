@@ -1,7 +1,7 @@
 <template>
   <div class="home flexCol">
     <div class="topRightIcon">
-      <svg @click="store.toggleEditMode()" v-if="auth.IsConnected">
+      <svg @click="store.toggleEditMode()" v-if="auth.IsConnected"
         xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="-3 -3 30 30" stroke-width="1.5" stroke="black" :class="{'scale':true,'active':store.editMode}">
         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
       </svg>
@@ -33,12 +33,15 @@
     </div>
     
     <!-- RESULTS -->
-    <div v-if="(infos!='')" class="results">
+    <div v-if="(infos!='')" class="results w-100">
       <p v-if="(results.length==0)" class="infos">{{infos}}</p>
       <div class="favDisplayFlex" :key="forceCardUpdate">
-        <ResultCardVue v-for="(res, index) in results" :key="index" :result="res.item" :score="res.score"></ResultCardVue>
+        <ResultCardVue @show-card-info="showCardDetails" v-for="(res, index) in results" :key="index" :result="res.item" :score="res.score"></ResultCardVue>
       </div>
     </div>
+
+    <!-- DETAILED CARD -->
+    <DetailedCardVue @close-card-info="favSelected=null" v-if="favSelected" :item="favSelected" ></DetailedCardVue>
 
   </div>
 </template>
@@ -48,6 +51,7 @@ import { ref } from 'vue'
 import { useStore } from '@/stores/store'
 import ResultCardVue from '@/components/ResultCard.vue'
 import FavCardVue from '@/components/FavCard.vue'
+import DetailedCardVue from '@/components/DetailedCard.vue'
 import { useAuth } from '@/stores/auth'
 
 const auth = useAuth()
@@ -62,6 +66,14 @@ var mostVisited = ref(null)
 var searchBar = ref(null)
 var forceCardUpdate = ref(0)
 var searching = ref(false)
+var favSelected = ref(null)
+
+function showCardDetails(item)
+{
+  favSelected.value = item
+  //disable scroll
+  document.body.style.overflow = 'hidden';
+}
 
 
 function emptySearch()

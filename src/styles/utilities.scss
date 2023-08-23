@@ -3,6 +3,7 @@
     cursor: pointer;
 }
 
+
 .flexCol{
     display: flex;
     flex-direction: column;
@@ -35,4 +36,84 @@ text-align: justify;
         -ms-user-select: none; /* Internet Explorer/Edge */
             user-select: none; /* Non-prefixed version, currently
                                 supported by Chrome, Edge, Opera and Firefox */
+}
+
+
+
+.flex{
+    display: flex;
+    justify-content:center;
+    align-items: center;
+    gap: 1rem;
+
+    &-row{
+        @extend .flex;
+        flex-direction: row;
+        &.btw{
+            justify-content: space-between;
+        }
+        &.start{
+            justify-content: flex-start;
+        }
+        &.end{
+            justify-content: flex-end;
+        }
+        &.top{
+            align-items: flex-start;
+        }
+        &.bottom{
+            align-items: flex-end;
+        }
+    }
+    &-col{
+        @extend .flex;
+        flex-direction: column;
+        &.btw{
+            justify-content: space-between;
+        }
+        &.start{
+            justify-content: flex-start;
+        }
+        &.end{
+            justify-content: flex-end;
+        }
+        &.top{
+            align-items: flex-start;
+        }
+        &.bottom{
+            align-items: flex-end;
+        }
+    }
+    
+
+    .gap{
+        &-small{
+            gap: 0.5rem;
+        }
+        &-big{
+            gap: 10rem;
+        }
+        &-no{
+            gap: 0;
+        }
+    }
+}
+
+.w-100{
+    width: 100%;
+}
+.w-90{
+    width: 90%;
+}
+.w-50{
+    width: 50%;
+}
+.w-grow{
+    flex-grow: 1;
+}
+.h-100{
+    height: 100%;
+}
+.h-50{
+    height: 50%;
 }

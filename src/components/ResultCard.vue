@@ -1,5 +1,11 @@
 <template>
     <div class="resultCard glass variant" @click="openLink">
+        <svg @mouseover="hoverInfo=true" @mouseout="hoverInfo=false" @click="showCardInfo" class="infoToggle ionicon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+            <path d="M248 64C146.39 64 64 146.39 64 248s82.39 184 184 184 184-82.39 184-184S349.61 64 248 64z" fill="none" stroke="#94a1b2" stroke-miterlimit="10" stroke-width="32"/>
+            <path fill="none" stroke="#94a1b2" stroke-linecap="round" stroke-linejoin="round" stroke-width="32" d="M220 220h32v116"/>
+            <path fill="none" stroke="#94a1b2" stroke-linecap="round" stroke-miterlimit="10" stroke-width="32" d="M208 340h88"/>
+            <path class="fill" fill="#94a1b2" d="M248 130a26 26 0 1026 26 26 26 0 00-26-26z"/>
+        </svg>
         <div class="basicInfo">
             <img :src="('https://www.google.com/s2/favicons?domain='+fav.url+'&sz=64')" alt="no image :/">
             <p v-if="!store.editMode">{{fav.name}}</p>
@@ -14,10 +20,13 @@
 <script setup>
 import { defineProps,onMounted,ref,watch } from 'vue'
 import { useStore } from '@/stores/store'
+import { defineEmits } from 'vue'
 
 const store = useStore()
+const emits = defineEmits(['showCardInfo'])
 var fav = ref({})
 var removedTags = ref([])
+var hoverInfo = ref(false)
 //eslint-disable-next-line
 const props = defineProps({
     result: {
@@ -60,9 +69,16 @@ function InRemovedList(index)
 function openLink()
 {   
     if (store.editMode) return;
-    console.log("open link")
+    if(hoverInfo.value) return;
+
     store.IncrementVisitCount(props.result.id)
     window.open(props.result.url)
+}
+
+function showCardInfo()
+{
+    //emit showCardInfo event
+    emits('showCardInfo',fav.value)
 }
 
 function removeTagToggle(index)
@@ -89,9 +105,10 @@ function addTag(e)
 </script>
 <style lang="scss" scoped>
 .resultCard{
+    position: relative;
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     justify-content: flex-start;
     width: 100%;
     max-width: 300px;
@@ -99,6 +116,7 @@ function addTag(e)
     border-radius: 15px;
     padding: .3rem 0.8rem;
     cursor: pointer;
+    transition: all 0.3s ease-in-out;
 
     input{
         outline:none;
@@ -111,13 +129,30 @@ function addTag(e)
         color: $secondary;
     }
 
+    .infoToggle{
+        position: absolute;
+        top: 0.25rem;
+        right: 0.25rem;
+        width:1.5rem;
+        aspect-ratio: 1/1;
+        z-index: 10;
+        &:hover{
+            path{
+                stroke: $tertiary;
+            }
+            .fill{
+                fill: $tertiary;
+            }
+        }
+    }
+
     .basicInfo{
         display: flex;
         flex-direction: row;
         align-items: center;
         justify-content: flex-start;
         gap:1rem;
-        width: 100%;
+        width: calc(100% - 1.75rem);
         margin-bottom: 0.5rem;
         p,input{
             margin: 0;
