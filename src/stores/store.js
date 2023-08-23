@@ -24,7 +24,8 @@ export const useStore = defineStore('main', {
             keys: [
                 "name",
                 "url",
-                "tags"
+                "tags",
+                "description"
             ]
         }
         }
@@ -330,6 +331,16 @@ export const useStore = defineStore('main', {
         {
           //download json file
           try{
+            //add an empty description to each bookmark if it doesn't exist
+            for(let i = 0; i < this.content.length; i++)
+            {
+              let b = this.content[i];
+              if(b.description == null || b.description == undefined)
+              {
+                b.description = "";
+              }
+            }
+
 
             let dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(this.content));
             console.log(dataStr)
