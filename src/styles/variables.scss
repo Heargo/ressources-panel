@@ -18,17 +18,19 @@
   --highlight: #2cb67d;
   --secondary: #72757e;
   --tertiary: #7f5af0;
+
+  --background-glass-input: rgba(255, 255, 255, 0.04);
 }
 
 //redefine variables for light theme
 :root.light-theme {
   --background: #f0f0f0 !important;
   --background-alternative: #f1f1f1;
-  --background-alternative2: #ececec;
+  --background-alternative2: #f2f2f2;
   --text-color: #16161a !important;
 
   --red: #df3434;
-  --white: #f1f2f6;
+  --white: #f3f3f3;
   --black: #16161a;
   --yellow: #f1c40f;
 
@@ -38,6 +40,8 @@
 
   //illustrations
   --highlight: #2cb67d;
-  --secondary: #72757e;
+  --secondary: #2f2f30;
   --tertiary: #7f5af0;
+
+  --background-glass-input: rgba(255, 255, 255, 0.477);
 }

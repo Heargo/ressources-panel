@@ -31,14 +31,16 @@
     <!-- color theme -->
     <section class="flex-col glass">
       <h2>Color theme</h2>
-      <ButtonComponent @click="store.switchTheme">Switch to {{ store.userTheme.value == "dark" ? "light" : "dark" }}</ButtonComponent>
+      <p v-if="store.userTheme=='dark'">You will burn your eyes if you switch to light... you are warned</p>
+      <p v-else>Please come to the dark side !</p>
+      <ButtonComponent @click="store.switchTheme">Switch to {{ store.userTheme == "dark" ? "light" : "dark" }}</ButtonComponent>
       <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>  
 
     <!-- Export json -->
     <section class="flex-col glass">
       <h2>Export</h2>
-      <p>Export the current {{store.content.length}} saved bookmarks (include default + custom) in .json format</p>
+      <p>Export the current {{store.content.length}} bookmarks in .json format</p>
       <ButtonComponent @click="store.ExportSave">Export to json</ButtonComponent>
       <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>    

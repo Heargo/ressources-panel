@@ -186,6 +186,12 @@ function addTag(e) {
     width: 1.5rem;
     aspect-ratio: 1/1;
     z-index: 10;
+    path {
+      stroke: var(--text-color);
+    }
+    .fill {
+      fill: var(--text-color);
+    }
     &:hover {
       path {
         stroke: var(--tertiary);
