@@ -1,20 +1,43 @@
 //general
-$background:#16161a;
-$background-alternative:#222227;
-$background-alternative2:#2d2d33;
-$text-color:#94a1b2;
+:root {
+  --background: #16161a;
+  --background-alternative: #222227;
+  --background-alternative2: #2d2d33;
+  --text-color: #94a1b2;
 
-$red:#df3434;
-$white:#f1f2f6;
-$black:#010101;
-$yellow:#f1c40f;
+  --red: #df3434;
+  --white: #f1f2f6;
+  --black: #010101;
+  --yellow: #f1c40f;
 
+  //button
+  --button: #2cb67d;
+  --button-txt: #fffffe;
 
-//button
-$button:#2cb67d;
-$button-txt:#fffffe;
+  //illustrations
+  --highlight: #2cb67d;
+  --secondary: #72757e;
+  --tertiary: #7f5af0;
+}
 
-//illustrations
-$highlight:#2cb67d;
-$secondary:#72757e;
-$tertiary:#7f5af0;
+//redefine variables for light theme
+:root.light-theme {
+  --background: #f0f0f0 !important;
+  --background-alternative: #f1f1f1;
+  --background-alternative2: #ececec;
+  --text-color: #16161a !important;
+
+  --red: #df3434;
+  --white: #f1f2f6;
+  --black: #16161a;
+  --yellow: #f1c40f;
+
+  //button
+  --button: #2cb67d;
+  --button-txt: #fffffe;
+
+  //illustrations
+  --highlight: #2cb67d;
+  --secondary: #72757e;
+  --tertiary: #7f5af0;
+}

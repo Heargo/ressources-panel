@@ -4,7 +4,7 @@
 
     <!-- HOME BUTTON -->
     <router-link to="/" class="topRightIcon">
-      <img src="@/assets/home.svg" alt="">
+      <img :src="require(`@/assets/${store.userTheme}/home.svg`)"  alt="">
     </router-link>
 
     <!-- Create New favs -->
@@ -27,6 +27,13 @@
       <ButtonComponent v-if="fileSelected" @click="importData">Import</ButtonComponent>
       <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>
+
+    <!-- color theme -->
+    <section class="flex-col glass">
+      <h2>Color theme</h2>
+      <ButtonComponent @click="store.switchTheme">Switch to {{ store.userTheme.value == "dark" ? "light" : "dark" }}</ButtonComponent>
+      <p v-if="feedback" class="text-center">{{feedback}}</p>
+    </section>  
 
     <!-- Export json -->
     <section class="flex-col glass">
@@ -71,7 +78,6 @@ const importedJson = ref(null)
 const feedback = ref("")
 const newFav = ref({})
 const auth = useAuth()
-
 
 function selectFile(e)
 {
