@@ -4,7 +4,7 @@
 
     <!-- HOME BUTTON -->
     <router-link to="/" class="topRightIcon">
-      <img src="@/assets/home.svg" alt="">
+      <img :src="require(`@/assets/${store.userTheme}/home.svg`)"  alt="">
     </router-link>
 
     <!-- Create New favs -->
@@ -28,10 +28,19 @@
       <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>
 
+    <!-- color theme -->
+    <section class="flex-col glass">
+      <h2>Color theme</h2>
+      <p v-if="store.userTheme=='dark'">You will burn your eyes if you switch to light... you are warned</p>
+      <p v-else>Please come to the dark side !</p>
+      <ButtonComponent @click="store.switchTheme">Switch to {{ store.userTheme == "dark" ? "light" : "dark" }}</ButtonComponent>
+      <p v-if="feedback" class="text-center">{{feedback}}</p>
+    </section>  
+
     <!-- Export json -->
     <section class="flex-col glass">
       <h2>Export</h2>
-      <p>Export the current {{store.content.length}} saved bookmarks (include default + custom) in .json format</p>
+      <p>Export the current {{store.content.length}} bookmarks in .json format</p>
       <ButtonComponent @click="store.ExportSave">Export to json</ButtonComponent>
       <p v-if="feedback" class="text-center">{{feedback}}</p>
     </section>    
@@ -71,7 +80,6 @@ const importedJson = ref(null)
 const feedback = ref("")
 const newFav = ref({})
 const auth = useAuth()
-
 
 function selectFile(e)
 {

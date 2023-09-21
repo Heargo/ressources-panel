@@ -1,42 +1,41 @@
 <template>
-    <button :class="props.classes"><slot></slot></button>
+  <button :class="props.classes"><slot></slot></button>
 </template>
 <script setup>
 //use props to pass class
-import { defineProps } from 'vue'
+import { defineProps } from "vue";
 const props = defineProps({
-    classes: String
-})
-
+  classes: String,
+});
 </script>
 <style lang="scss" scoped>
-button{
+button {
   border: none;
   border-radius: 1rem;
-  padding: .5rem .8rem;
+  padding: 0.5rem 0.8rem;
   font-size: 1rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  background-color: $button;
-  color: $button-txt;
-  filter:brightness(.9);
-  &:hover{
+  background-color: var(--button);
+  color: var(--button-txt);
+  filter: brightness(0.9);
+  &:hover {
     transform: scale(1.05);
     //make the all button darker (filter)
-    filter:brightness(1.1)
+    filter: brightness(1.1);
   }
-  &.bigger{
+  &.bigger {
     font-size: 1.5rem;
-    padding: .2rem 1rem;
+    padding: 0.2rem 1rem;
   }
-  &.red{
-    background-color: $white;
-    color: $red;
+  &.red {
+    background-color: var(--white);
+    color: var(--red);
     font-weight: bold;
-    &:hover{
-    background-color: $red;
-    color: $white;
+    &:hover {
+      background-color: var(--red);
+      color: var(--white);
     }
-}
+  }
 }
 </style>
