@@ -6,7 +6,9 @@
       "
       alt="no image :/"
     />
-    <p class="name">{{ result.name }}</p>
+    <p :class="{ infoBottom: infoBottom, name: true }">
+      {{ result.name }}
+    </p>
   </div>
 </template>
 <script setup>
@@ -20,6 +22,10 @@ const props = defineProps({
   result: {
     type: Object,
     required: true,
+  },
+  infoBottom: {
+    type: Boolean,
+    default: false,
   },
 });
 
@@ -69,6 +75,12 @@ function openLink() {
       top: 50%;
       transform: translateY(-50%);
       left: calc($card-size + 1.2rem);
+      width: fit-content;
+      &.infoBottom {
+        top: 150%;
+        left: 0%;
+        transform: translateX(calc(-50% + $card-size / 2 + 0.2rem));
+      }
     }
   }
 }

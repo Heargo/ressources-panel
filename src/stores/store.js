@@ -18,6 +18,7 @@ export const useStore = defineStore("main", {
       lastCloudSync: localStorage.getItem("lastCloudSave") || null,
       lastLocalSave: localStorage.getItem("lastLocalSave") || null,
       userTheme: localStorage.getItem("user-theme") || "dark",
+      recentAddition: [],
       searchOptions: {
         shouldSort: true,
         threshold: 0.2,
@@ -83,6 +84,7 @@ export const useStore = defineStore("main", {
         }
       }
       this.toast.Show(message, "success");
+      this.GetRecentAddition(10);
     },
     async SaveContent(userID, client) {
       var response;
@@ -259,6 +261,19 @@ export const useStore = defineStore("main", {
       });
 
       return mostVisited;
+    },
+    GetRecentAddition(n) {
+      if (this.content == null) return [];
+      let recentAddition = this.content
+        .sort((a, b) => {
+          let dateA = new Date(a.dateAdded);
+          let dateB = new Date(b.dateAdded);
+          return dateB - dateA;
+        })
+        .slice(0, n);
+      console.log("done");
+      this.recentAddition = recentAddition;
+      return recentAddition;
     },
     AddListOfBookmarks(bookmarks) {
       let feedback;
