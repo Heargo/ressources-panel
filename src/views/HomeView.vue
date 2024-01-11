@@ -61,8 +61,19 @@
       <div class="flex-row" v-show="!searching">
         <p class="text-center">
           You can search into name, description, and tag of the
-          {{ store.content.length }} bookmarks or use the quick search.
+          {{ store.content.length }} bookmarks, use the quick search or look at
+          recent additions :
         </p>
+      </div>
+
+      <!-- RECENT ADDITIONS -->
+      <div class="recentAddtions" v-show="!searching">
+        <FavCardVue
+          v-for="(res, index) in store.recentAddition"
+          :key="index"
+          :result="res"
+          :infoBottom="true"
+        ></FavCardVue>
       </div>
     </div>
 
@@ -266,7 +277,16 @@ function search(query = null) {
     font-size: 1.5rem;
     margin-top: 1rem;
   }
-
+  .recentAddtions {
+    margin-top: 1rem;
+    width: 100%;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
   .favDisplayFlex {
     display: flex;
     flex-direction: row;
