@@ -45,7 +45,7 @@
     }
   }
 
-  input {
+  input,select {
     border: none;
     border-radius: 1rem;
     padding: 0.5rem 0.8rem;
@@ -55,6 +55,9 @@
     background-color: var(--background-glass-input);
     color: var(--text-color);
   }
+
+
+
 }
 
 section {
