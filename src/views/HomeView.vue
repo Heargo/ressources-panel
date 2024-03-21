@@ -1,6 +1,7 @@
 <template>
   <div class="home flex-col">
     <div class="topRightIcon">
+      <TldrNewsComponent></TldrNewsComponent>
       <svg
         @click="store.toggleEditMode()"
         v-if="auth.IsConnected"
@@ -117,6 +118,7 @@ import { useStore } from "@/stores/store";
 import ResultCardVue from "@/components/ResultCard.vue";
 import FavCardVue from "@/components/FavCard.vue";
 import DetailedCardVue from "@/components/DetailedCard.vue";
+import TldrNewsComponent from "@/components/TldrNewsComponent.vue";
 import { useAuth } from "@/stores/auth";
 
 const auth = useAuth();
@@ -287,6 +289,7 @@ function search(query = null) {
     flex-wrap: wrap;
     gap: 1rem;
   }
+
   .favDisplayFlex {
     display: flex;
     flex-direction: row;

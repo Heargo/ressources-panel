@@ -19,6 +19,7 @@ export const useStore = defineStore("main", {
       lastLocalSave: localStorage.getItem("lastLocalSave") || null,
       userTheme: localStorage.getItem("user-theme") || "dark",
       recentAddition: [],
+      tldrSubject: localStorage.getItem("tldrSubject") ||"tech",
       searchOptions: {
         shouldSort: true,
         threshold: 0.2,
@@ -52,6 +53,11 @@ export const useStore = defineStore("main", {
       localStorage.setItem("lastLocalSave", this.lastLocalSave);
       //load history from local storage
       this.history = JSON.parse(localStorage.getItem("history")) || {};
+    },
+    setSubject(subject){
+      console.log("setting subject to ", subject)
+      localStorage.setItem("tldrSubject", subject);
+      this.tldrSubject = subject;
     },
     async LoadContent(client) {
       var message;

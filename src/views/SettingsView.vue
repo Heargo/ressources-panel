@@ -18,6 +18,16 @@
       <ButtonComponent @click="CreateNewFavs">Add a new fav</ButtonComponent>
     </section>
 
+    <!-- Change TL;DR subject -->
+    <section class="flex-col glass">
+      <h2>Change TL;DR subject</h2>
+      <div class="custom-select">
+        <select name="subject" id="subject" :value="store.tldrSubject">
+          <option @click="store.setSubject(option)" v-for="option in tldrSubjectOptions" :key="option" :value="option">{{option}}</option>
+        </select>
+      </div>
+    </section>
+
     <!-- Import json -->
     <section class="flex-col glass" v-if="auth.IsConnected">
       <h2>Import</h2>
@@ -80,6 +90,8 @@ const importedJson = ref(null)
 const feedback = ref("")
 const newFav = ref({})
 const auth = useAuth()
+
+const tldrSubjectOptions = ["tech", "webdev", "ai", "infosec", "devops"]
 
 function selectFile(e)
 {
